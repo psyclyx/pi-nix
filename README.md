@@ -23,6 +23,7 @@ Evaluate the example:
 
 ```sh
 nix eval -f examples/eval.nix config.pi.settings --json
+nix eval -f examples/daily-driver-eval.nix config.pi.settings --json
 nix build --no-link -f default.nix packages.pi
 ```
 
@@ -68,6 +69,9 @@ set `pi.runtime.projectTrust`, `pi.runtime.contextFiles`, or `pi.runtime.extraAr
 ## Packages
 
 Curated packages are exposed as typed module options under `pi.packages.*`.
+See `examples/daily-driver.nix` for a fuller package set that enables
+Superpowers, Context7, Lens, and a compact statusline without embedding secrets
+or enabling browser-cookie access.
 For personal config, local iteration, or a package from git/npm that does not
 yet have a typed module, use `pi.packages.custom`:
 
