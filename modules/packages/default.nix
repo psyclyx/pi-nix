@@ -1,0 +1,25 @@
+[
+  ./ask-user-question.nix
+  ./browser-native.nix
+  ./btw.nix
+  ./custom.nix
+  ./context7.nix
+  ./goal.nix
+  ./hermes-memory.nix
+  ./hypa.nix
+  ./lens.nix
+  ./mcp-adapter.nix
+  ./permission-system.nix
+  ./rewind.nix
+  ./rpiv-advisor.nix
+  ./rpiv-args.nix
+  ./rpiv-i18n.nix
+  ./rpiv-web-tools.nix
+  ./rpiv-workflow.nix
+  ./rpiv.nix
+  ./shazam.nix
+  ./statusline.nix
+  ./subagents.nix
+  ./todo.nix
+  ./web-access.nix
+]
