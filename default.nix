@@ -31,4 +31,8 @@ in
   lib = piLib;
   packages = piPackages;
   piConfiguration = piLib.piConfiguration;
+  homeManagerModules = rec {
+    default = import ./home-manager;
+    pi-nix = default;
+  };
 }

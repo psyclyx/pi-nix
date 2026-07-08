@@ -32,6 +32,33 @@ Build a launcher:
 nix build --impure --expr 'let piNix = import ./. {}; in (piNix.piConfiguration { modules = [ ./examples/basic.nix ]; }).launcher'
 ```
 
+## Home Manager
+
+The Home Manager module supports multiple named profiles. Each profile gets its
+own generated command; the command defaults to the profile name and can be
+overridden with `binaryName`.
+
+```nix
+{
+  imports = [
+    piNix.homeManagerModules.default
+  ];
+
+  programs.pi-nix = {
+    enable = true;
+
+    profiles.pi.modules = [
+      ./pi.nix
+    ];
+
+    profiles.review = {
+      binaryName = "pi-review";
+      modules = [ ./review.nix ];
+    };
+  };
+}
+```
+
 The launcher writes generated `settings.json` and package sidecar JSON under a
 managed `PI_CODING_AGENT_DIR`. By default it links only `auth.json` from
 `~/.pi/agent` when present, so generated configurations do not read the normal

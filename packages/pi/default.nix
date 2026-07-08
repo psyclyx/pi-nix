@@ -3,6 +3,7 @@
   fetchzip,
   importNpmLock,
   lib,
+  binaryName ? "pi",
   entry ? { },
 }:
 
@@ -39,7 +40,7 @@ let
   };
 in
 buildNpmPackage {
-  pname = "pi";
+  pname = if binaryName == "pi" then "pi" else "pi-${binaryName}";
   inherit version src;
 
   dontNpmBuild = true;
@@ -56,14 +57,18 @@ buildNpmPackage {
     rm -f npm-shrinkwrap.json
   '';
 
+  postInstall = lib.optionalString (binaryName != "pi") ''
+    mv "$out/bin/pi" "$out/bin"/${lib.escapeShellArg binaryName}
+  '';
+
   passthru = {
-    inherit entry;
+    inherit binaryName entry;
   };
 
   meta = {
     description = "Pi coding agent packaged by pi-nix";
     license = lib.licenses.mit;
     platforms = lib.platforms.unix;
-    mainProgram = "pi";
+    mainProgram = binaryName;
   };
 }
