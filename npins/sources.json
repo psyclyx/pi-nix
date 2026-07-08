@@ -1,0 +1,25 @@
+{
+  "pins": {
+    "nixpkgs": {
+      "type": "Channel",
+      "name": "nixpkgs-unstable",
+      "artifact": "nixexprs.tar.xz",
+      "url": "https://releases.nixos.org/nixpkgs/nixpkgs-26.11pre1028110.f205b5574fd0/nixexprs.tar.xz",
+      "hash": "sha256-2l8yOB5aYd+05Q9V9Y1YhgbSa1j1o5QX+nvYs5FL80A="
+    },
+    "pi": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "earendil-works",
+        "repo": "pi"
+      },
+      "branch": "main",
+      "submodules": false,
+      "revision": "dd1c690f36de449fac9b24c8b3d113837eaf7cfb",
+      "url": "https://github.com/earendil-works/pi/archive/dd1c690f36de449fac9b24c8b3d113837eaf7cfb.tar.gz",
+      "hash": "sha256-0eftKYHT3UQRci0dj24I99jrG56ElE4sAO6+MiqVZ3I="
+    }
+  },
+  "version": 8
+}

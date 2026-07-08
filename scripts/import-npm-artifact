@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat >&2 <<'USAGE'
+Usage: scripts/import-npm-artifact <alias> <npm-package[@version]>
+
+Imports a non-Pi npm artifact into registry.npmPackages.
+
+Examples:
+  scripts/import-npm-artifact jiti jiti@2.7.0
+  scripts/import-npm-artifact rpiv-config @juicesharp/rpiv-config@1.20.0
+USAGE
+  exit 2
+}
+
+if [ "$#" -ne 2 ]; then
+  usage
+fi
+
+alias_name=$1
+spec=$2
+
+registry_path=registry/packages.json
+tmp_dir=$(mktemp -d)
+trap 'rm -rf "$tmp_dir"' EXIT
+
+metadata=$(npm view "$spec" name version description dist.tarball dist.integrity --json)
+name=$(jq -r '.name' <<<"$metadata")
+version=$(jq -r '.version' <<<"$metadata")
+description=$(jq -r '.description // ""' <<<"$metadata")
+tarball=$(jq -r '."dist.tarball"' <<<"$metadata")
+source="npm:${name}@${version}"
+
+flat_prefetch=$(nix store prefetch-file --json "$tarball")
+unpack_prefetch=$(nix store prefetch-file --unpack --json "$tarball")
+flat_hash=$(jq -r '.hash' <<<"$flat_prefetch")
+unpack_hash=$(jq -r '.hash' <<<"$unpack_prefetch")
+
+entry=$(jq -n \
+  --arg name "$name" \
+  --arg source "$source" \
+  --arg tarball "$tarball" \
+  --arg hash "$flat_hash" \
+  --arg unpackHash "$unpack_hash" \
+  --arg version "$version" \
+  --arg description "$description" \
+  '{
+    autoUpdate: true,
+    kind: "npm",
+    npmPackage: $name,
+    source: $source,
+    tarball: $tarball,
+    hash: $hash,
+    unpackHash: $unpackHash,
+    version: $version,
+    description: $description
+  }')
+
+jq \
+  --arg alias "$alias_name" \
+  --argjson entry "$entry" \
+  '.npmPackages[$alias] = $entry | .npmPackages |= with_entries(.key as $k | .)' \
+  "$registry_path" >"$tmp_dir/packages.json"
+
+jq --sort-keys . "$tmp_dir/packages.json" >"$registry_path"
+printf '%s: %s\n' "$alias_name" "$source"

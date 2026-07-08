@@ -1,0 +1,156 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat >&2 <<'USAGE'
+Usage: scripts/import-npm-pi-package <alias> <npm-package[@version]> [--agent] [--module <name>] [--category <name>]
+
+Examples:
+  scripts/import-npm-pi-package pi @earendil-works/pi-coding-agent --agent
+  scripts/import-npm-pi-package web-access pi-web-access --module webAccess --category web
+USAGE
+  exit 2
+}
+
+if [ "$#" -lt 2 ]; then
+  usage
+fi
+
+alias_name=$1
+spec=$2
+shift 2
+
+kind=extension
+module_name=$(printf '%s' "$alias_name" | sed -E 's/-([a-z])/\U\1/g')
+category=uncategorized
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --agent)
+      kind=agent
+      shift
+      ;;
+    --module)
+      [ "$#" -ge 2 ] || usage
+      module_name=$2
+      shift 2
+      ;;
+    --category)
+      [ "$#" -ge 2 ] || usage
+      category=$2
+      shift 2
+      ;;
+    *)
+      usage
+      ;;
+  esac
+done
+
+registry_path=registry/packages.json
+tmp_dir=$(mktemp -d)
+trap 'rm -rf "$tmp_dir"' EXIT
+
+metadata=$(npm view "$spec" name version description dist.tarball dist.integrity --json)
+name=$(jq -r '.name' <<<"$metadata")
+version=$(jq -r '.version' <<<"$metadata")
+description=$(jq -r '.description // ""' <<<"$metadata")
+tarball=$(jq -r '."dist.tarball"' <<<"$metadata")
+source="npm:${name}@${version}"
+
+flat_prefetch=$(nix store prefetch-file --json "$tarball")
+unpack_prefetch=$(nix store prefetch-file --unpack --json "$tarball")
+flat_hash=$(jq -r '.hash' <<<"$flat_prefetch")
+unpack_hash=$(jq -r '.hash' <<<"$unpack_prefetch")
+store_path=$(jq -r '.storePath' <<<"$unpack_prefetch")
+
+lock_integrities='{}'
+lock_file=
+if [ -f "$store_path/npm-shrinkwrap.json" ]; then
+  lock_file=$store_path/npm-shrinkwrap.json
+elif [ -f "$store_path/package-lock.json" ]; then
+  lock_file=$store_path/package-lock.json
+fi
+
+package_name_from_lock_path() {
+  local path=$1
+  local rest=${path##*node_modules/}
+  local first second
+
+  IFS=/ read -r first second _ <<<"$rest"
+  if [[ $first == @* ]]; then
+    printf '%s/%s\n' "$first" "$second"
+  else
+    printf '%s\n' "$first"
+  fi
+}
+
+if [ -n "$lock_file" ]; then
+  while IFS=$'\t' read -r lock_path package_version resolved; do
+    [ -n "$lock_path" ] || continue
+    [ "$resolved" != "null" ] || continue
+
+    package_name=$(package_name_from_lock_path "$lock_path")
+    integrity=$(npm view "${package_name}@${package_version}" dist.integrity --json | jq -r '.')
+    [ "$integrity" != "null" ] || continue
+
+    lock_integrities=$(jq \
+      --arg path "$lock_path" \
+      --arg integrity "$integrity" \
+      '. + {($path): $integrity}' \
+      <<<"$lock_integrities")
+  done < <(
+    jq -r '
+      .packages
+      | to_entries[]
+      | select(.key != "")
+      | select(.value.resolved? != null)
+      | select(.value.integrity? == null)
+      | [.key, .value.version, .value.resolved]
+      | @tsv
+    ' "$lock_file"
+  )
+fi
+
+entry=$(jq -n \
+  --arg kind "$kind" \
+  --arg name "$name" \
+  --arg source "$source" \
+  --arg tarball "$tarball" \
+  --arg hash "$flat_hash" \
+  --arg unpackHash "$unpack_hash" \
+  --arg version "$version" \
+  --argjson lockIntegrities "$lock_integrities" \
+  '{
+    autoUpdate: true,
+    kind: $kind,
+    npmPackage: $name,
+    source: $source,
+    tarball: $tarball,
+    hash: $hash,
+    unpackHash: $unpackHash,
+    version: $version
+  }
+  + if ($lockIntegrities | length) == 0 then {} else { npmLockIntegrities: $lockIntegrities } end')
+
+if [ "$kind" = agent ]; then
+  jq \
+    --arg alias "$alias_name" \
+    --argjson entry "$entry" \
+    '.packages[$alias] = $entry | .packages |= with_entries(.key as $k | .) | .piPackages |= with_entries(.key as $k | .)' \
+    "$registry_path" >"$tmp_dir/packages.json"
+else
+  entry=$(jq \
+    --arg category "$category" \
+    --arg description "$description" \
+    --arg module "$module_name" \
+    '. + { category: $category, description: $description, module: $module }' \
+    <<<"$entry")
+  jq \
+    --arg alias "$alias_name" \
+    --argjson entry "$entry" \
+    '.piPackages[$alias] = $entry | .packages |= with_entries(.key as $k | .) | .piPackages |= with_entries(.key as $k | .)' \
+    "$registry_path" >"$tmp_dir/packages.json"
+fi
+
+jq --sort-keys . "$tmp_dir/packages.json" >"$registry_path"
+printf '%s: %s\n' "$alias_name" "$source"

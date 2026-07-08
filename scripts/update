@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+npins update "$@"
+npins verify
+bash -n scripts/import-npm-pi-package
+bash -n scripts/import-npm-artifact
+nix eval -f examples/eval.nix config.pi.settings --json >/dev/null
