@@ -95,6 +95,11 @@ rec {
           ''"${cfg.runtime.auth.directory}"''
         else
           ''""'';
+      packageDir =
+        if cfg.runtime.packageDir != null then
+          cfg.runtime.packageDir
+        else
+          "${cfg.package}/lib/node_modules/@earendil-works/pi-coding-agent";
       launcher =
         if cfg.package == null then
           null
@@ -107,10 +112,15 @@ rec {
             ];
             text = ''
               agent_dir="''${PI_NIX_AGENT_DIR:-${cfg.runtime.stateDir}}"
-              package_dir="''${PI_NIX_PACKAGE_DIR:-${cfg.runtime.packageDir}}"
+              pi_package_dir="''${PI_NIX_PACKAGE_DIR:-${packageDir}}"
               auth_source=${authSource}
 
-              mkdir -p "$agent_dir" "$package_dir"
+              mkdir -p "$agent_dir"
+
+              if [ ! -f "$pi_package_dir/package.json" ]; then
+                printf 'pi-nix: PI_PACKAGE_DIR must point at the Pi package root, got: %s\n' "$pi_package_dir" >&2
+                exit 1
+              fi
 
               if [ -n "$auth_source" ] && [ -e "$auth_source/auth.json" ] && [ ! -e "$agent_dir/auth.json" ]; then
                 ln -s "$auth_source/auth.json" "$agent_dir/auth.json"
@@ -119,7 +129,7 @@ rec {
               ${installJsonCommands fileDrvs}
 
               export PI_CODING_AGENT_DIR="$agent_dir"
-              export PI_PACKAGE_DIR="$package_dir"
+              export PI_PACKAGE_DIR="$pi_package_dir"
               ${exportAgentDirCommands cfg.agentDirEnvironment}
               ${exportCommands cfg.environment}
 

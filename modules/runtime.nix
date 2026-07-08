@@ -24,9 +24,13 @@ in
     };
 
     packageDir = lib.mkOption {
-      type = types.str;
-      default = "\${XDG_STATE_HOME:-$HOME/.local/state}/pi-nix/packages";
-      description = "Mutable runtime directory used as PI_PACKAGE_DIR by the wrapper.";
+      type = types.nullOr types.str;
+      default = null;
+      description = ''
+        Pi package root used as PI_PACKAGE_DIR by the wrapper. Null points at
+        the packaged Pi node module in the Nix store. Override this only when
+        testing a different Pi package tree.
+      '';
     };
 
     auth = {

@@ -60,8 +60,9 @@ overridden with `binaryName`.
 }
 ```
 
-The launcher writes generated `settings.json` and package sidecar JSON under a
-managed `PI_CODING_AGENT_DIR`. By default it links only `auth.json` from
+The launcher writes generated `settings.json` and package config files under a
+managed `PI_CODING_AGENT_DIR`, and points `PI_PACKAGE_DIR` at the packaged Pi
+node module in the Nix store. By default it links only `auth.json` from
 `~/.pi/agent` when present, so generated configurations do not read the normal
 non-auth global Pi config. CLI trust/context behavior is left to Pi unless you
 set `pi.runtime.projectTrust`, `pi.runtime.contextFiles`, or `pi.runtime.extraArgs`.
