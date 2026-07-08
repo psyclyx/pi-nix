@@ -1,8 +1,49 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-npins update "$@"
+include_npins=0
+registry_args=()
+
+usage() {
+  cat >&2 <<'USAGE'
+Usage: scripts/update [--npins] [registry-alias ...]
+
+Updates npm/Pi registry artifacts by default. Pass aliases to update only those
+registry entries. Use --npins when you explicitly want to update npins pins too.
+USAGE
+  exit 2
+}
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --npins)
+      include_npins=1
+      shift
+      ;;
+    -h|--help)
+      usage
+      ;;
+    --)
+      shift
+      registry_args+=("$@")
+      break
+      ;;
+    *)
+      registry_args+=("$1")
+      shift
+      ;;
+  esac
+done
+
+scripts/update-npm-registry "${registry_args[@]}"
+
+if [ "$include_npins" -eq 1 ]; then
+  scripts/update-npins
+fi
+
 npins verify
 bash -n scripts/import-npm-pi-package
 bash -n scripts/import-npm-artifact
+bash -n scripts/update-npm-registry
+bash -n scripts/update-npins
 nix eval -f examples/eval.nix config.pi.settings --json >/dev/null

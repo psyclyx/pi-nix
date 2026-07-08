@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat >&2 <<'USAGE'
+Usage: scripts/update-npm-registry [alias ...]
+
+Updates registry/packages.json entries whose autoUpdate flag is not false.
+With no aliases, updates every npmPackages, packages, and piPackages entry.
+With aliases, updates only matching registry aliases.
+USAGE
+  exit 2
+}
+
+if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
+  usage
+fi
+
+registry_path=registry/packages.json
+filters=("$@")
+updated=0
+
+matches_filter() {
+  local alias_name=$1
+
+  if [ "${#filters[@]}" -eq 0 ]; then
+    return 0
+  fi
+
+  local filter
+  for filter in "${filters[@]}"; do
+    if [ "$filter" = "$alias_name" ]; then
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+while IFS=$'\t' read -r group alias_name package_name module_name category; do
+  if ! matches_filter "$alias_name"; then
+    continue
+  fi
+
+  case "$group" in
+    npmPackages)
+      scripts/import-npm-artifact "$alias_name" "$package_name"
+      ;;
+    packages)
+      scripts/import-npm-pi-package "$alias_name" "$package_name" --agent
+      ;;
+    piPackages)
+      scripts/import-npm-pi-package "$alias_name" "$package_name" --module "$module_name" --category "$category"
+      ;;
+    *)
+      printf 'unknown registry group: %s\n' "$group" >&2
+      exit 1
+      ;;
+  esac
+
+  updated=$((updated + 1))
+done < <(
+  jq -r '
+    def enabled: (.value.autoUpdate // true) != false;
+
+    [
+      ((.npmPackages // {}) | to_entries[] | select(enabled) |
+        ["npmPackages", .key, .value.npmPackage, "", ""]),
+      ((.packages // {}) | to_entries[] | select(enabled) |
+        ["packages", .key, .value.npmPackage, "", ""]),
+      ((.piPackages // {}) | to_entries[] | select(enabled) |
+        ["piPackages", .key, .value.npmPackage, (.value.module // ""), (.value.category // "uncategorized")])
+    ][]
+    | @tsv
+  ' "$registry_path"
+)
+
+if [ "$updated" -eq 0 ]; then
+  if [ "${#filters[@]}" -eq 0 ]; then
+    printf 'No auto-update registry entries found.\n' >&2
+  else
+    printf 'No matching auto-update registry entries: %s\n' "${filters[*]}" >&2
+  fi
+  exit 1
+fi
+
+printf 'Updated %s registry entr%s.\n' \
+  "$updated" \
+  "$(if [ "$updated" -eq 1 ]; then printf 'y'; else printf 'ies'; fi)"

@@ -80,10 +80,19 @@ dependencies are built with `pkgs.importNpmLock`, so dependency tarballs are
 fetched directly from lockfile integrity data.
 
 For auto-updates, keep npins for repository pins and the registry for npm
-artifacts. `scripts/update` updates pins, verifies hashes, and checks that the
-module scaffold still evaluates.
+artifacts. `scripts/update` updates npm/Pi registry artifacts, verifies hashes,
+and checks that the module scaffold still evaluates. Pass registry aliases to
+update only those entries.
 
 ```sh
 scripts/update
+scripts/update pi rpiv rpiv-workflow
 direnv allow
+```
+
+Update npins only when you explicitly want to move repository pins:
+
+```sh
+scripts/update-npins
+scripts/update --npins
 ```
