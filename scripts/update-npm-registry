@@ -37,7 +37,7 @@ matches_filter() {
   return 1
 }
 
-while IFS=$'\t' read -r group alias_name package_name module_name category; do
+while IFS=$'\t' read -r group alias_name source_kind package_name module_name category; do
   if ! matches_filter "$alias_name"; then
     continue
   fi
@@ -50,7 +50,18 @@ while IFS=$'\t' read -r group alias_name package_name module_name category; do
       scripts/import-npm-pi-package "$alias_name" "$package_name" --agent
       ;;
     piPackages)
-      scripts/import-npm-pi-package "$alias_name" "$package_name" --module "$module_name" --category "$category"
+      case "$source_kind" in
+        github)
+          scripts/import-github-pi-package "$alias_name" "$package_name" --module "$module_name" --category "$category"
+          ;;
+        npm)
+          scripts/import-npm-pi-package "$alias_name" "$package_name" --module "$module_name" --category "$category"
+          ;;
+        *)
+          printf 'unknown piPackages source kind for %s: %s\n' "$alias_name" "$source_kind" >&2
+          exit 1
+          ;;
+      esac
       ;;
     *)
       printf 'unknown registry group: %s\n' "$group" >&2
@@ -65,11 +76,18 @@ done < <(
 
     [
       ((.npmPackages // {}) | to_entries[] | select(enabled) |
-        ["npmPackages", .key, .value.npmPackage, "", ""]),
+        ["npmPackages", .key, "npm", .value.npmPackage, "", ""]),
       ((.packages // {}) | to_entries[] | select(enabled) |
-        ["packages", .key, .value.npmPackage, "", ""]),
+        ["packages", .key, "npm", .value.npmPackage, "", ""]),
       ((.piPackages // {}) | to_entries[] | select(enabled) |
-        ["piPackages", .key, .value.npmPackage, (.value.module // ""), (.value.category // "uncategorized")])
+        [
+          "piPackages",
+          .key,
+          (.value.sourceKind // "npm"),
+          (if (.value.sourceKind // "npm") == "github" then .value.githubRepo else .value.npmPackage end),
+          (.value.module // ""),
+          (.value.category // "uncategorized")
+        ])
     ][]
     | @tsv
   ' "$registry_path"

@@ -89,27 +89,28 @@ yet have a typed module, use `pi.packages.custom`:
 ## Registry
 
 `nixpkgs` is pinned with npins only to provide a reproducible build
-environment. Pi itself is packaged here, not taken from nixpkgs. Npm artifact
+environment. Pi itself is packaged here, not taken from nixpkgs. Package
 identity lives in `registry/packages.json`: package name, version, tarball,
 flat hash, unpacked source hash, and any lockfile integrity repairs required by
-the published npm tarball.
+published npm tarballs.
 
-Refresh or add an npm package with:
+Refresh or add package sources with:
 
 ```sh
 scripts/import-npm-pi-package pi @earendil-works/pi-coding-agent --agent
 scripts/import-npm-pi-package web-access pi-web-access --module webAccess --category web
+scripts/import-github-pi-package superpowers obra/superpowers --module superpowers --category workflow
 ```
 
-The importer is a shell script. It uses `npm view` for metadata and
-`nix store prefetch-file --unpack --json` for recursive source hashes. Pi's npm
-dependencies are built with `pkgs.importNpmLock`, so dependency tarballs are
-fetched directly from lockfile integrity data.
+The importers are shell scripts. They use `npm view` or GitHub tags for
+metadata and `nix store prefetch-file --unpack --json` for recursive source
+hashes. Pi's npm dependencies are built with `pkgs.importNpmLock`, so dependency
+tarballs are fetched directly from lockfile integrity data.
 
-For auto-updates, keep npins for repository pins and the registry for npm
-artifacts. `scripts/update` updates npm/Pi registry artifacts, verifies hashes,
-and checks that the module scaffold still evaluates. Pass registry aliases to
-update only those entries.
+For auto-updates, keep npins for repository pins and the registry for Pi/npm
+artifacts. `scripts/update` updates npm and GitHub-backed Pi registry artifacts,
+verifies hashes, and checks that the module scaffold still evaluates. Pass
+registry aliases to update only those entries.
 
 ```sh
 scripts/update

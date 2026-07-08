@@ -301,6 +301,22 @@
       "unpackHash": "sha256-MY8udJNhtszhkm2AP1hszI7HK+JevBiMlJlYamcy8QM=",
       "version": "0.34.0"
     },
+    "superpowers": {
+      "autoUpdate": true,
+      "category": "workflow",
+      "description": "Superpowers skills and runtime bootstrap for coding agents",
+      "githubRepo": "obra/superpowers",
+      "hash": "sha256-YlkR+pvtiTjusQnTrurv33Rm9ocCkKyROOEj8vhdrAg=",
+      "kind": "extension",
+      "module": "superpowers",
+      "package": "superpowers",
+      "ref": "v6.1.1",
+      "source": "github:obra/superpowers@v6.1.1",
+      "sourceKind": "github",
+      "tarball": "https://github.com/obra/superpowers/archive/refs/tags/v6.1.1.tar.gz",
+      "unpackHash": "sha256-kHdQ9e44doBk2yYW88tMSCqVG8ycYcvJSZlrIziXhpA=",
+      "version": "6.1.1"
+    },
     "todo": {
       "autoUpdate": true,
       "category": "workflow",

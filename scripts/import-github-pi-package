@@ -1,0 +1,130 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat >&2 <<'USAGE'
+Usage: scripts/import-github-pi-package <alias> <owner/repo[@tag]> [--module <name>] [--category <name>]
+
+If @tag is omitted, the latest v-prefixed tag is used.
+
+Examples:
+  scripts/import-github-pi-package superpowers obra/superpowers --module superpowers --category workflow
+  scripts/import-github-pi-package superpowers obra/superpowers@v6.1.1 --module superpowers --category workflow
+USAGE
+  exit 2
+}
+
+if [ "$#" -lt 2 ]; then
+  usage
+fi
+
+alias_name=$1
+spec=$2
+shift 2
+
+module_name=$(printf '%s' "$alias_name" | sed -E 's/-([a-z])/\U\1/g')
+category=uncategorized
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --module)
+      [ "$#" -ge 2 ] || usage
+      module_name=$2
+      shift 2
+      ;;
+    --category)
+      [ "$#" -ge 2 ] || usage
+      category=$2
+      shift 2
+      ;;
+    *)
+      usage
+      ;;
+  esac
+done
+
+repo=${spec%@*}
+tag=
+if [[ "$spec" == *@* ]]; then
+  tag=${spec##*@}
+fi
+
+if [[ "$repo" != */* ]]; then
+  printf 'expected owner/repo, got: %s\n' "$repo" >&2
+  exit 2
+fi
+
+if [ -z "$tag" ]; then
+  tag=$(
+    git ls-remote --tags --refs "https://github.com/${repo}.git" 'refs/tags/v*' \
+      | sed -E 's#.*refs/tags/##' \
+      | sort -V \
+      | tail -n 1
+  )
+fi
+
+if [ -z "$tag" ]; then
+  printf 'could not determine a v-prefixed tag for %s\n' "$repo" >&2
+  exit 1
+fi
+
+registry_path=registry/packages.json
+tmp_dir=$(mktemp -d)
+trap 'rm -rf "$tmp_dir"' EXIT
+
+tarball="https://github.com/${repo}/archive/refs/tags/${tag}.tar.gz"
+source="github:${repo}@${tag}"
+
+flat_prefetch=$(nix store prefetch-file --json "$tarball")
+unpack_prefetch=$(nix store prefetch-file --unpack --json "$tarball")
+flat_hash=$(jq -r '.hash' <<<"$flat_prefetch")
+unpack_hash=$(jq -r '.hash' <<<"$unpack_prefetch")
+store_path=$(jq -r '.storePath' <<<"$unpack_prefetch")
+
+package_json=$store_path/package.json
+package_name=$repo
+version=${tag#v}
+description=""
+if [ -f "$package_json" ]; then
+  package_name=$(jq -r --arg fallback "$package_name" '.name // $fallback' "$package_json")
+  version=$(jq -r --arg fallback "$version" '.version // $fallback' "$package_json")
+  description=$(jq -r '.description // ""' "$package_json")
+fi
+
+entry=$(jq -n \
+  --arg packageName "$package_name" \
+  --arg repo "$repo" \
+  --arg tag "$tag" \
+  --arg source "$source" \
+  --arg tarball "$tarball" \
+  --arg hash "$flat_hash" \
+  --arg unpackHash "$unpack_hash" \
+  --arg version "$version" \
+  --arg category "$category" \
+  --arg description "$description" \
+  --arg module "$module_name" \
+  '{
+    autoUpdate: true,
+    kind: "extension",
+    sourceKind: "github",
+    package: $packageName,
+    githubRepo: $repo,
+    ref: $tag,
+    source: $source,
+    tarball: $tarball,
+    hash: $hash,
+    unpackHash: $unpackHash,
+    version: $version,
+    category: $category,
+    description: $description,
+    module: $module
+  }')
+
+jq \
+  --arg alias "$alias_name" \
+  --argjson entry "$entry" \
+  '.piPackages[$alias] = $entry | .packages |= with_entries(.key as $k | .) | .piPackages |= with_entries(.key as $k | .)' \
+  "$registry_path" >"$tmp_dir/packages.json"
+
+jq --sort-keys . "$tmp_dir/packages.json" >"$registry_path"
+printf '%s: %s\n' "$alias_name" "$source"

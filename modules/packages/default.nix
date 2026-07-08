@@ -19,6 +19,7 @@
   ./rpiv.nix
   ./shazam.nix
   ./statusline.nix
+  ./superpowers.nix
   ./subagents.nix
   ./todo.nix
   ./web-access.nix
