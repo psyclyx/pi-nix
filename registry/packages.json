@@ -123,27 +123,27 @@
       "autoUpdate": true,
       "category": "context",
       "description": "Pi extension that keeps noisy tool output out of your context window. Automatically rewrites shell commands through Hypa for local, deterministic compression, context-aware file tools, and recoverable evidence.",
-      "hash": "sha256-s8Wc3rJg9Si8UM5afS08xX0JVoQZLNh07r+0joTVm50=",
+      "hash": "sha256-UxFVyYAih5yUP6I46VTNVyrEQB/GricVb1YnndAhI54=",
       "kind": "extension",
       "module": "hypa",
       "npmPackage": "@hypabolic/pi-hypa",
-      "source": "npm:@hypabolic/pi-hypa@0.1.8",
-      "tarball": "https://registry.npmjs.org/@hypabolic/pi-hypa/-/pi-hypa-0.1.8.tgz",
-      "unpackHash": "sha256-O3lw5D9bszQFE1TC1QyffAdh5JdwCmhd/btYXbftYcc=",
-      "version": "0.1.8"
+      "source": "npm:@hypabolic/pi-hypa@0.1.9",
+      "tarball": "https://registry.npmjs.org/@hypabolic/pi-hypa/-/pi-hypa-0.1.9.tgz",
+      "unpackHash": "sha256-/llIvo1YTqAvjlwSbMnfDJRqDqoyyBu2VQ6pEL7Syxw=",
+      "version": "0.1.9"
     },
     "lens": {
       "autoUpdate": true,
       "category": "code-intel",
       "description": "Real-time code feedback for pi — LSP, linters, formatters, type-checking, structural analysis & booboo",
-      "hash": "sha256-lrkIy8TSLcCFiSUnGQXhE3RuuG1lziOmfO15fAA8sKc=",
+      "hash": "sha256-py0yXb6PHQ+hNPLdEpDbSBDBIduXAuAMCNY8y8jF8V0=",
       "kind": "extension",
       "module": "lens",
       "npmPackage": "pi-lens",
-      "source": "npm:pi-lens@3.8.66",
-      "tarball": "https://registry.npmjs.org/pi-lens/-/pi-lens-3.8.66.tgz",
-      "unpackHash": "sha256-g3ZxF1Zi9zDRO6RqgzjfM77Uk+3Ne/nYVmxG64fbaow=",
-      "version": "3.8.66"
+      "source": "npm:pi-lens@3.8.67",
+      "tarball": "https://registry.npmjs.org/pi-lens/-/pi-lens-3.8.67.tgz",
+      "unpackHash": "sha256-CnC8n39vBK3hQWGWJAkCRcP7hLKnYGuZBeia7sLXe3U=",
+      "version": "3.8.67"
     },
     "mcp-adapter": {
       "autoUpdate": true,
@@ -162,14 +162,14 @@
       "autoUpdate": true,
       "category": "security",
       "description": "Permission enforcement extension for the Pi coding agent.",
-      "hash": "sha256-UGWalGnjZkVxxKbaKX5Pmsh7LoKEZPXBAKwLid/Gvas=",
+      "hash": "sha256-UK1jqaxpPfl5eyFlcJ83Yat0DFPQHa7yqeLSQemDx5k=",
       "kind": "extension",
       "module": "permissionSystem",
       "npmPackage": "@gotgenes/pi-permission-system",
-      "source": "npm:@gotgenes/pi-permission-system@20.0.0",
-      "tarball": "https://registry.npmjs.org/@gotgenes/pi-permission-system/-/pi-permission-system-20.0.0.tgz",
-      "unpackHash": "sha256-FewlIXAJ1nMFur8shocJD2eXCZpFsWKmUr8pAQiAvok=",
-      "version": "20.0.0"
+      "source": "npm:@gotgenes/pi-permission-system@20.2.0",
+      "tarball": "https://registry.npmjs.org/@gotgenes/pi-permission-system/-/pi-permission-system-20.2.0.tgz",
+      "unpackHash": "sha256-6XtNo+Fu9GKv+sBIZN/RyQdW8TYABp15qQxs+iMBxpY=",
+      "version": "20.2.0"
     },
     "rewind": {
       "autoUpdate": true,
