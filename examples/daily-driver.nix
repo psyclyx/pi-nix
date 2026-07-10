@@ -1,7 +1,15 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
-  pi.profiles.coding.enable = true;
+  pi = {
+    enable = true;
+
+    extraPackages = with pkgs; [
+      git
+      jq
+      ripgrep
+    ];
+  };
 
   pi.runtime = {
     launcherName = "pi";
@@ -25,33 +33,20 @@
       "Keep changes scoped to the requested task."
       "Prefer package-managed tools and configuration over ad hoc global state."
     ];
+    tools = {
+      git = true;
+      shell = true;
+    };
+    workspace.search = "ripgrep";
   };
 
   pi.packages = {
-    superpowers = {
-      enable = true;
-      disableTelemetry = true;
-    };
-
-    context7.enable = true;
-
-    lens = {
-      enable = true;
-      projectConfig = false;
-      contextInjection.enabled = false;
-    };
-
-    statusline = {
-      enable = true;
-      palette = "mono";
-      density = "compact";
-      segments = [
-        "model"
-        "cwd"
-        "branch"
-        "tools"
-        "context"
-      ];
-    };
+    superpowers.enable = true;
+    askUser.enable = true;
+    plan.enable = true;
+    addDir.enable = true;
+    claudeCli.enable = true;
+    rawPaste.enable = true;
+    usage.enable = true;
   };
 }

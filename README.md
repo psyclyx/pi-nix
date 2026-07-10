@@ -30,14 +30,17 @@ nix build --no-link -f default.nix packages.pi
 Build a launcher:
 
 ```sh
-nix build --impure --expr 'let piNix = import ./. {}; in (piNix.piConfiguration { modules = [ ./examples/basic.nix ]; }).launcher'
+nix-build examples/daily-driver-eval.nix
 ```
 
 ## Home Manager
 
 The Home Manager module supports multiple named profiles. Each profile gets its
 own generated command; the command defaults to the profile name and can be
-overridden with `binaryName`.
+overridden with `binaryName`. Profile entries have an `enable` option that
+defaults to true. When `programs.pi-nix.enable` is set, `profiles.pi` defaults
+to the daily-driver module as one top-level `mkDefault` profile; assign any
+`profiles.pi.*` option normally to replace that default profile.
 
 ```nix
 {
@@ -60,19 +63,35 @@ overridden with `binaryName`.
 }
 ```
 
-The launcher writes generated `settings.json` and package config files under a
-managed `PI_CODING_AGENT_DIR`, and points `PI_PACKAGE_DIR` at the packaged Pi
-node module in the Nix store. By default it links only `auth.json` from
-`~/.pi/agent` when present, so generated configurations do not read the normal
-non-auth global Pi config. CLI trust/context behavior is left to Pi unless you
-set `pi.runtime.projectTrust`, `pi.runtime.contextFiles`, or `pi.runtime.extraArgs`.
+The launcher writes generated `settings.json` and package config files under
+`PI_CODING_AGENT_DIR`, and points `PI_PACKAGE_DIR` at the packaged Pi node module
+in the Nix store. By default it links only `auth.json` from `~/.pi/agent` when
+present, so generated configurations do not read the normal non-auth global Pi
+config. CLI trust/context behavior is left to Pi unless you set
+`pi.runtime.projectTrust`, `pi.runtime.contextFiles`, or `pi.runtime.extraArgs`.
 
 ## Packages
 
 Curated packages are exposed as typed module options under `pi.packages.*`.
-See `examples/daily-driver.nix` for a fuller package set that enables
-Superpowers, Context7, Lens, and a compact statusline without embedding secrets
-or enabling browser-cookie access.
+Most mirror the LazyPi package catalog; Superpowers is added separately from the
+official `obra/superpowers` Pi package. `examples/daily-driver.nix` enables a
+small default set without embedding secrets or enabling browser-cookie access.
+
+The current catalog is:
+
+```text
+subagents, askUser, mcp, webAccess, memory, plan, simplify, addDir,
+promptTemplates, claudeCli, plannotator, slopchop, extensionSettings, powerbar,
+usage, rawPaste, todos, btw, interactiveShell, autoresearch, ralphWiggum,
+compound, hackerman, curatedThemes, terminalTheme
+```
+
+The additional curated package is `superpowers`.
+
+Compound is modeled as a generated local Pi package in the Nix store. Enabling
+`pi.packages.compound` also enables `subagents` and `askUser` by default because
+the generated skills rely on those tools.
+
 For personal config, local iteration, or a package from git/npm that does not
 yet have a typed module, use `pi.packages.custom`:
 
@@ -105,12 +124,17 @@ Refresh or add package sources with:
 scripts/import-npm-pi-package pi @earendil-works/pi-coding-agent --agent
 scripts/import-npm-pi-package web-access pi-web-access --module webAccess --category web
 scripts/import-github-pi-package superpowers obra/superpowers --module superpowers --category workflow
+scripts/import-github-pi-package todos tintinweb/pi-manage-todo-list --module todos --category ui
 ```
 
 The importers are shell scripts. They use `npm view` or GitHub tags for
 metadata and `nix store prefetch-file --unpack --json` for recursive source
-hashes. Pi's npm dependencies are built with `pkgs.importNpmLock`, so dependency
-tarballs are fetched directly from lockfile integrity data.
+hashes. Pi package dependencies are imported transitively into
+`npmPackages`; dependency aliases include the requested range, such as
+`entities@^6.0.0`, so two packages can depend on different versions of the same
+npm package without colliding. Pi's own npm dependencies are built with
+`pkgs.importNpmLock`, so dependency tarballs are fetched directly from lockfile
+integrity data.
 
 For auto-updates, keep npins for repository pins and the registry for Pi/npm
 artifacts. `scripts/update` updates npm and GitHub-backed Pi registry artifacts,
@@ -119,7 +143,7 @@ registry aliases to update only those entries.
 
 ```sh
 scripts/update
-scripts/update pi rpiv rpiv-workflow
+scripts/update pi subagents web-access
 direnv allow
 ```
 

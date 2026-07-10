@@ -1,8 +1,9 @@
 let
   piNix = import ../default.nix { };
+  configuration = piNix.piConfiguration {
+    modules = [
+      ./basic.nix
+    ];
+  };
 in
-piNix.piConfiguration {
-  modules = [
-    ./basic.nix
-  ];
-}
+configuration.launcher // configuration

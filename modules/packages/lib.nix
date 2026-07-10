@@ -10,7 +10,14 @@ rec {
 
   piPackageNodeModule =
     piPackage: name:
-    "${piPackage}/lib/node_modules/@earendil-works/pi-coding-agent/node_modules/${name}";
+    if name == "@earendil-works/pi-coding-agent" then
+      "${piPackage}/lib/node_modules/@earendil-works/pi-coding-agent"
+    else
+      "${piPackage}/lib/node_modules/@earendil-works/pi-coding-agent/node_modules/${name}";
+
+  isBundledPiNodeModule = name: lib.hasPrefix "@earendil-works/pi-" name;
+  piDependencyAliasPrefix = "pi:";
+  isPiDependencyAlias = alias: lib.hasPrefix piDependencyAliasPrefix alias;
 
   registryEntry =
     registry: name:
@@ -143,4 +150,64 @@ rec {
           '';
     in
     "${prepared}";
+
+  nodeModuleSources =
+    {
+      pkgs,
+      registry,
+      dependencies,
+      piPackage ? null,
+    }:
+    lib.mapAttrs (
+      nodeModuleName: registryAlias:
+      if isPiDependencyAlias registryAlias then
+        if piPackage == null then
+          throw "pi-nix: ${nodeModuleName} is bundled with Pi, but no piPackage was provided"
+        else
+          piPackageNodeModule piPackage (lib.removePrefix piDependencyAliasPrefix registryAlias)
+      else if isBundledPiNodeModule nodeModuleName then
+        if piPackage == null then
+          throw "pi-nix: ${nodeModuleName} is bundled with Pi, but no piPackage was provided"
+        else
+          piPackageNodeModule piPackage nodeModuleName
+      else
+        npmArtifactSource {
+          inherit pkgs registry piPackage;
+          alias = registryAlias;
+        }
+    ) dependencies;
+
+  npmArtifactSource =
+    {
+      pkgs,
+      registry,
+      alias,
+      piPackage ? null,
+    }:
+    let
+      entry = npmRegistryEntry registry alias;
+    in
+    npmPackageSource {
+      inherit pkgs entry;
+      nodeModules = nodeModuleSources {
+        inherit pkgs registry piPackage;
+        dependencies = entry.dependencies or { };
+      };
+    };
+
+  packageSource =
+    {
+      pkgs,
+      registry,
+      entry,
+      piPackage ? null,
+      patches ? "",
+    }:
+    npmPackageSource {
+      inherit pkgs entry patches;
+      nodeModules = nodeModuleSources {
+        inherit pkgs registry piPackage;
+        dependencies = entry.nodeModuleDependencies or { };
+      };
+    };
 }

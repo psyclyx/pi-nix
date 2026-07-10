@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  piPackages ? { },
   pkgs,
   registry ? { },
   ...
@@ -12,23 +11,6 @@ let
   inherit (lib) types;
   cfg = config.pi.packages.subagents;
   entry = packageLib.registryEntry registry "subagents";
-  piPackage = piPackages.pi or config.pi.package;
-  piPeer = packageLib.piPackageNodeModule piPackage;
-  jiti = packageLib.npmPackageSource {
-    inherit pkgs;
-    entry = packageLib.npmRegistryEntry registry "jiti";
-  };
-  source = packageLib.npmPackageSource {
-    inherit pkgs entry;
-    nodeModules = {
-      inherit jiti;
-      typebox = piPeer "typebox";
-      "@earendil-works/pi-agent-core" = piPeer "@earendil-works/pi-agent-core";
-      "@earendil-works/pi-ai" = piPeer "@earendil-works/pi-ai";
-      "@earendil-works/pi-coding-agent" = "${piPackage}/lib/node_modules/@earendil-works/pi-coding-agent";
-      "@earendil-works/pi-tui" = piPeer "@earendil-works/pi-tui";
-    };
-  };
 
   waitToolType = types.either types.bool (
     types.submodule {
@@ -96,7 +78,10 @@ in
 {
   options.pi.packages.subagents =
     packageLib.packageResourceOptions {
-      defaultSource = source;
+      defaultSource = packageLib.packageSource {
+        inherit pkgs registry entry;
+        piPackage = config.pi.package;
+      };
       description = "Pi subagent delegation";
     }
     // {
@@ -304,7 +289,7 @@ in
     };
 
   config = lib.mkIf cfg.enable {
-    pi.packageEntries = [ (packageLib.packageEntry cfg) ];
+    pi.packageEntries = lib.mkOrder 100 [ (packageLib.packageEntry cfg) ];
     pi.settings = lib.optionalAttrs (subagentSettings != { }) {
       subagents = subagentSettings;
     };

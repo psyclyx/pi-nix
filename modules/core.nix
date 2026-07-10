@@ -49,7 +49,7 @@ in
     agentDirEnvironment = lib.mkOption {
       type = types.attrsOf types.str;
       default = { };
-      example = lib.literalExpression ''{ PI_LENS_CONFIG_PATH = "config/pi-lens/config.json"; }'';
+      example = lib.literalExpression ''{ EXAMPLE_CONFIG_PATH = "config/example.json"; }'';
       description = "Environment variables whose values are paths relative to PI_CODING_AGENT_DIR.";
     };
   };

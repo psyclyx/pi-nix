@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   registry ? { },
   ...
 }:
@@ -59,7 +60,10 @@ in
 {
   options.pi.packages.webAccess =
     packageLib.packageResourceOptions {
-      defaultSource = entry.source;
+      defaultSource = packageLib.packageSource {
+        inherit pkgs registry entry;
+        piPackage = config.pi.package;
+      };
       description = "Pi web search and content access";
     }
     // {
@@ -178,7 +182,7 @@ in
     };
 
   config = lib.mkIf cfg.enable {
-    pi.packageEntries = [ (packageLib.packageEntry cfg) ];
+    pi.packageEntries = lib.mkOrder 130 [ (packageLib.packageEntry cfg) ];
     pi.files = lib.optionalAttrs (webAccessConfig != { }) {
       "web-search.json" = webAccessConfig;
     };

@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   registry ? { },
   ...
 }:
@@ -8,8 +9,8 @@
 let
   packageLib = import ./lib.nix { inherit lib; };
   inherit (lib) types;
-  cfg = config.pi.packages.mcpAdapter;
-  entry = packageLib.registryEntry registry "mcp-adapter";
+  cfg = config.pi.packages.mcp;
+  entry = packageLib.registryEntry registry "mcp";
 
   directToolsType = types.either types.bool (types.listOf types.str);
   outputGuardType = types.either types.bool (
@@ -188,9 +189,12 @@ let
     // cfg.extraConfig;
 in
 {
-  options.pi.packages.mcpAdapter =
+  options.pi.packages.mcp =
     packageLib.packageResourceOptions {
-      defaultSource = entry.source;
+      defaultSource = packageLib.packageSource {
+        inherit pkgs registry entry;
+        piPackage = config.pi.package;
+      };
       description = "MCP adapter for Pi";
     }
     // {
@@ -255,7 +259,7 @@ in
     };
 
   config = lib.mkIf cfg.enable {
-    pi.packageEntries = [ (packageLib.packageEntry cfg) ];
+    pi.packageEntries = lib.mkOrder 120 [ (packageLib.packageEntry cfg) ];
     pi.files = lib.optionalAttrs (mcpConfig != { }) {
       "mcp.json" = mcpConfig;
     };

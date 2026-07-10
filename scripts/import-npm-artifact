@@ -5,11 +5,12 @@ usage() {
   cat >&2 <<'USAGE'
 Usage: scripts/import-npm-artifact <alias> <npm-package[@version]>
 
-Imports a non-Pi npm artifact into registry.npmPackages.
+Imports a non-Pi npm artifact and its transitive runtime dependencies into
+registry.npmPackages.
 
 Examples:
   scripts/import-npm-artifact jiti jiti@2.7.0
-  scripts/import-npm-artifact rpiv-config @juicesharp/rpiv-config@1.20.0
+  scripts/import-npm-artifact example-lib example-lib@1.0.0
 USAGE
   exit 2
 }
@@ -24,44 +25,121 @@ spec=$2
 registry_path=registry/packages.json
 tmp_dir=$(mktemp -d)
 trap 'rm -rf "$tmp_dir"' EXIT
+registry_json=$(cat "$registry_path")
+declare -A importing
 
-metadata=$(npm view "$spec" name version description dist.tarball dist.integrity --json)
-name=$(jq -r '.name' <<<"$metadata")
-version=$(jq -r '.version' <<<"$metadata")
-description=$(jq -r '.description // ""' <<<"$metadata")
-tarball=$(jq -r '."dist.tarball"' <<<"$metadata")
-source="npm:${name}@${version}"
+bundled_pi_dependency_target() {
+  case "$1" in
+    @earendil-works/pi-coding-agent)
+      printf '@earendil-works/pi-coding-agent\n'
+      ;;
+    @earendil-works/pi-*)
+      printf '%s\n' "$1"
+      ;;
+    @mariozechner/pi-coding-agent)
+      printf '@earendil-works/pi-coding-agent\n'
+      ;;
+    @mariozechner/pi-agent-core)
+      printf '@earendil-works/pi-agent-core\n'
+      ;;
+    @mariozechner/pi-ai)
+      printf '@earendil-works/pi-ai\n'
+      ;;
+    @mariozechner/pi-tui)
+      printf '@earendil-works/pi-tui\n'
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
 
-flat_prefetch=$(nix store prefetch-file --json "$tarball")
-unpack_prefetch=$(nix store prefetch-file --unpack --json "$tarball")
-flat_hash=$(jq -r '.hash' <<<"$flat_prefetch")
-unpack_hash=$(jq -r '.hash' <<<"$unpack_prefetch")
+import_artifact() {
+  local current_alias=$1
+  local current_spec=$2
+  local metadata name version description tarball source
+  local dependencies dependency_map flat_prefetch unpack_prefetch flat_hash unpack_hash entry
+  local dependency_name dependency_range dependency_alias bundled_target
 
-entry=$(jq -n \
-  --arg name "$name" \
-  --arg source "$source" \
-  --arg tarball "$tarball" \
-  --arg hash "$flat_hash" \
-  --arg unpackHash "$unpack_hash" \
-  --arg version "$version" \
-  --arg description "$description" \
-  '{
-    autoUpdate: true,
-    kind: "npm",
-    npmPackage: $name,
-    source: $source,
-    tarball: $tarball,
-    hash: $hash,
-    unpackHash: $unpackHash,
-    version: $version,
-    description: $description
-  }')
+  metadata=$(
+    npm view "$current_spec" name version description dist.tarball dist.integrity dependencies optionalDependencies peerDependencies --json \
+      | jq 'if type == "array" then last else . end'
+  )
+  name=$(jq -r '.name' <<<"$metadata")
+  version=$(jq -r '.version' <<<"$metadata")
+  description=$(jq -r '.description // ""' <<<"$metadata")
+  tarball=$(jq -r '."dist.tarball"' <<<"$metadata")
+  source="npm:${name}@${version}"
 
-jq \
-  --arg alias "$alias_name" \
-  --argjson entry "$entry" \
-  '.npmPackages[$alias] = $entry | .npmPackages |= with_entries(.key as $k | .)' \
-  "$registry_path" >"$tmp_dir/packages.json"
+  if [ -n "${importing[$current_alias]:-}" ]; then
+    return
+  fi
+  importing[$current_alias]=1
 
-jq --sort-keys . "$tmp_dir/packages.json" >"$registry_path"
-printf '%s: %s\n' "$alias_name" "$source"
+  dependencies=$(jq -c '(.dependencies // {}) + (.optionalDependencies // {}) + (.peerDependencies // {})' <<<"$metadata")
+  dependency_map='{}'
+  while IFS=$'\t' read -r dependency_name dependency_range; do
+    [ -n "$dependency_name" ] || continue
+    dependency_alias="${dependency_name}@${dependency_range}"
+    if bundled_target=$(bundled_pi_dependency_target "$dependency_name"); then
+      dependency_alias="pi:${bundled_target}"
+    else
+      import_artifact "$dependency_alias" "${dependency_name}@${dependency_range}"
+    fi
+    dependency_map=$(jq \
+      --arg name "$dependency_name" \
+      --arg alias "$dependency_alias" \
+      '. + {($name): $alias}' \
+      <<<"$dependency_map")
+  done < <(
+    jq -r '
+      if type == "object" then
+        to_entries[]
+        | select((.key // "") != "" and (.value // "") != "")
+        | [.key, .value]
+        | @tsv
+      else
+        empty
+      end
+    ' <<<"$dependencies"
+  )
+
+  flat_prefetch=$(nix store prefetch-file --json "$tarball")
+  unpack_prefetch=$(nix store prefetch-file --unpack --json "$tarball")
+  flat_hash=$(jq -r '.hash' <<<"$flat_prefetch")
+  unpack_hash=$(jq -r '.hash' <<<"$unpack_prefetch")
+
+  entry=$(jq -n \
+    --arg name "$name" \
+    --arg source "$source" \
+    --arg tarball "$tarball" \
+    --arg hash "$flat_hash" \
+    --arg unpackHash "$unpack_hash" \
+    --arg version "$version" \
+    --arg description "$description" \
+    --argjson dependencies "$dependency_map" \
+    '{
+      autoUpdate: true,
+      kind: "npm",
+      npmPackage: $name,
+      source: $source,
+      tarball: $tarball,
+      hash: $hash,
+      unpackHash: $unpackHash,
+      version: $version,
+      description: $description
+    }
+    + if ($dependencies | length) == 0 then {} else { dependencies: $dependencies } end')
+
+  registry_json=$(jq \
+    --arg alias "$current_alias" \
+    --argjson entry "$entry" \
+    '.npmPackages[$alias] = $entry | .npmPackages |= with_entries(.key as $k | .)' \
+    <<<"$registry_json")
+
+  printf '%s: %s\n' "$current_alias" "$source"
+}
+
+import_artifact "$alias_name" "$spec"
+jq --sort-keys . <<<"$registry_json" >"$tmp_dir/packages.json"
+mv "$tmp_dir/packages.json" "$registry_path"

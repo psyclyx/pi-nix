@@ -8,8 +8,8 @@ Usage: scripts/import-github-pi-package <alias> <owner/repo[@tag]> [--module <na
 If @tag is omitted, the latest v-prefixed tag is used.
 
 Examples:
-  scripts/import-github-pi-package superpowers obra/superpowers --module superpowers --category workflow
-  scripts/import-github-pi-package superpowers obra/superpowers@v6.1.1 --module superpowers --category workflow
+  scripts/import-github-pi-package todos tintinweb/pi-manage-todo-list --module todos --category ui
+  scripts/import-github-pi-package hackerman javierportillo/pi-hackerman@63b0a3ef2c7b14985ffeb6cac44614ba59cd5693 --module hackerman --category themes
 USAGE
   exit 2
 }
@@ -72,8 +72,38 @@ registry_path=registry/packages.json
 tmp_dir=$(mktemp -d)
 trap 'rm -rf "$tmp_dir"' EXIT
 
-tarball="https://github.com/${repo}/archive/refs/tags/${tag}.tar.gz"
-source="github:${repo}@${tag}"
+bundled_pi_dependency_target() {
+  case "$1" in
+    @earendil-works/pi-coding-agent)
+      printf '@earendil-works/pi-coding-agent\n'
+      ;;
+    @earendil-works/pi-*)
+      printf '%s\n' "$1"
+      ;;
+    @mariozechner/pi-coding-agent)
+      printf '@earendil-works/pi-coding-agent\n'
+      ;;
+    @mariozechner/pi-agent-core)
+      printf '@earendil-works/pi-agent-core\n'
+      ;;
+    @mariozechner/pi-ai)
+      printf '@earendil-works/pi-ai\n'
+      ;;
+    @mariozechner/pi-tui)
+      printf '@earendil-works/pi-tui\n'
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+tarball="https://github.com/${repo}/archive/${tag}.tar.gz"
+source="git:github.com/${repo}@${tag}"
+auto_update=true
+if [[ "$tag" =~ ^[0-9a-fA-F]{40}$ ]]; then
+  auto_update=false
+fi
 
 flat_prefetch=$(nix store prefetch-file --json "$tarball")
 unpack_prefetch=$(nix store prefetch-file --unpack --json "$tarball")
@@ -85,10 +115,33 @@ package_json=$store_path/package.json
 package_name=$repo
 version=${tag#v}
 description=""
+node_module_dependencies='{}'
 if [ -f "$package_json" ]; then
   package_name=$(jq -r --arg fallback "$package_name" '.name // $fallback' "$package_json")
   version=$(jq -r --arg fallback "$version" '.version // $fallback' "$package_json")
   description=$(jq -r '.description // ""' "$package_json")
+  while IFS=$'\t' read -r dependency_name dependency_range; do
+    [ -n "$dependency_name" ] || continue
+    dependency_alias="${dependency_name}@${dependency_range}"
+    if bundled_target=$(bundled_pi_dependency_target "$dependency_name"); then
+      dependency_alias="pi:${bundled_target}"
+    else
+      scripts/import-npm-artifact "$dependency_alias" "${dependency_name}@${dependency_range}"
+    fi
+    node_module_dependencies=$(jq \
+      --arg name "$dependency_name" \
+      --arg alias "$dependency_alias" \
+      '. + {($name): $alias}' \
+      <<<"$node_module_dependencies")
+  done < <(
+    jq -r '
+      ((.dependencies // {}) + (.optionalDependencies // {}) + (.peerDependencies // {}))
+      | to_entries[]
+      | select((.key // "") != "" and (.value // "") != "")
+      | [.key, .value]
+      | @tsv
+    ' "$package_json"
+  )
 fi
 
 entry=$(jq -n \
@@ -103,8 +156,10 @@ entry=$(jq -n \
   --arg category "$category" \
   --arg description "$description" \
   --arg module "$module_name" \
+  --argjson nodeModuleDependencies "$node_module_dependencies" \
+  --argjson autoUpdate "$auto_update" \
   '{
-    autoUpdate: true,
+    autoUpdate: $autoUpdate,
     kind: "extension",
     sourceKind: "github",
     package: $packageName,
@@ -118,7 +173,8 @@ entry=$(jq -n \
     category: $category,
     description: $description,
     module: $module
-  }')
+  }
+  + if ($nodeModuleDependencies | length) == 0 then {} else { nodeModuleDependencies: $nodeModuleDependencies } end')
 
 jq \
   --arg alias "$alias_name" \

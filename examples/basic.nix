@@ -1,7 +1,15 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
-  pi.profiles.coding.enable = true;
+  pi = {
+    enable = true;
+
+    extraPackages = with pkgs; [
+      git
+      jq
+      ripgrep
+    ];
+  };
 
   pi.settings = {
     model = "pi";
@@ -9,5 +17,10 @@
       "Read the repository before editing."
       "Keep changes scoped to the requested task."
     ];
+    tools = {
+      git = true;
+      shell = true;
+    };
+    workspace.search = "ripgrep";
   };
 }

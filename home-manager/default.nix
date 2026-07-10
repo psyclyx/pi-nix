@@ -79,6 +79,11 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    programs.pi-nix.profiles.pi = lib.mkDefault {
+      binaryName = "pi";
+      modules = [ ../examples/daily-driver.nix ];
+    };
+
     home.packages = lib.unique (
       lib.flatten (
         lib.mapAttrsToList (

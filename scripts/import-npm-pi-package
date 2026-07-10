@@ -50,12 +50,71 @@ registry_path=registry/packages.json
 tmp_dir=$(mktemp -d)
 trap 'rm -rf "$tmp_dir"' EXIT
 
-metadata=$(npm view "$spec" name version description dist.tarball dist.integrity --json)
+bundled_pi_dependency_target() {
+  case "$1" in
+    @earendil-works/pi-coding-agent)
+      printf '@earendil-works/pi-coding-agent\n'
+      ;;
+    @earendil-works/pi-*)
+      printf '%s\n' "$1"
+      ;;
+    @mariozechner/pi-coding-agent)
+      printf '@earendil-works/pi-coding-agent\n'
+      ;;
+    @mariozechner/pi-agent-core)
+      printf '@earendil-works/pi-agent-core\n'
+      ;;
+    @mariozechner/pi-ai)
+      printf '@earendil-works/pi-ai\n'
+      ;;
+    @mariozechner/pi-tui)
+      printf '@earendil-works/pi-tui\n'
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+metadata=$(
+  npm view "$spec" name version description dist.tarball dist.integrity dependencies optionalDependencies peerDependencies --json \
+    | jq 'if type == "array" then last else . end'
+)
 name=$(jq -r '.name' <<<"$metadata")
 version=$(jq -r '.version' <<<"$metadata")
 description=$(jq -r '.description // ""' <<<"$metadata")
 tarball=$(jq -r '."dist.tarball"' <<<"$metadata")
 source="npm:${name}@${version}"
+dependencies=$(jq -c '(.dependencies // {}) + (.optionalDependencies // {}) + (.peerDependencies // {})' <<<"$metadata")
+node_module_dependencies='{}'
+
+if [ "$kind" != agent ]; then
+  while IFS=$'\t' read -r dependency_name dependency_range; do
+    [ -n "$dependency_name" ] || continue
+    dependency_alias="${dependency_name}@${dependency_range}"
+    if bundled_target=$(bundled_pi_dependency_target "$dependency_name"); then
+      dependency_alias="pi:${bundled_target}"
+    else
+      scripts/import-npm-artifact "$dependency_alias" "${dependency_name}@${dependency_range}"
+    fi
+    node_module_dependencies=$(jq \
+      --arg name "$dependency_name" \
+      --arg alias "$dependency_alias" \
+      '. + {($name): $alias}' \
+      <<<"$node_module_dependencies")
+  done < <(
+    jq -r '
+      if type == "object" then
+        to_entries[]
+        | select((.key // "") != "" and (.value // "") != "")
+        | [.key, .value]
+        | @tsv
+      else
+        empty
+      end
+    ' <<<"$dependencies"
+  )
+fi
 
 flat_prefetch=$(nix store prefetch-file --json "$tarball")
 unpack_prefetch=$(nix store prefetch-file --unpack --json "$tarball")
@@ -143,7 +202,9 @@ else
     --arg category "$category" \
     --arg description "$description" \
     --arg module "$module_name" \
-    '. + { category: $category, description: $description, module: $module }' \
+    --argjson nodeModuleDependencies "$node_module_dependencies" \
+    '. + { category: $category, description: $description, module: $module }
+    + if ($nodeModuleDependencies | length) == 0 then {} else { nodeModuleDependencies: $nodeModuleDependencies } end' \
     <<<"$entry")
   jq \
     --arg alias "$alias_name" \

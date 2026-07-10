@@ -1,8 +1,9 @@
 let
   piNix = import ../default.nix { };
+  configuration = piNix.piConfiguration {
+    modules = [
+      ./daily-driver.nix
+    ];
+  };
 in
-piNix.piConfiguration {
-  modules = [
-    ./daily-driver.nix
-  ];
-}
+configuration.launcher // configuration

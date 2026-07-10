@@ -11,14 +11,14 @@ let
   inherit (lib) types;
   cfg = config.pi.packages.superpowers;
   entry = packageLib.registryEntry registry "superpowers";
-  source = packageLib.npmPackageSource {
-    inherit pkgs entry;
-  };
 in
 {
   options.pi.packages.superpowers =
     packageLib.packageResourceOptions {
-      defaultSource = source;
+      defaultSource = packageLib.packageSource {
+        inherit pkgs registry entry;
+        piPackage = config.pi.package;
+      };
       description = "Official Superpowers workflow skills for Pi";
     }
     // {
@@ -43,10 +43,10 @@ in
     lib.mkMerge [
       (lib.mkIf cfg.enableRecommendedCompanions {
         pi.packages.subagents.enable = lib.mkDefault true;
-        pi.packages.todo.enable = lib.mkDefault true;
+        pi.packages.todos.enable = lib.mkDefault true;
       })
       {
-        pi.packageEntries = [ (packageLib.packageEntry cfg) ];
+        pi.packageEntries = lib.mkOrder 95 [ (packageLib.packageEntry cfg) ];
         pi.environment =
           lib.optionalAttrs cfg.disableTelemetry {
             SUPERPOWERS_DISABLE_TELEMETRY = "1";
