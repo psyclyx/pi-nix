@@ -28,6 +28,29 @@ trap 'rm -rf "$tmp_dir"' EXIT
 registry_json=$(cat "$registry_path")
 declare -A importing
 
+seen_file_for() {
+  local alias=$1
+
+  [ -n "${PI_NIX_NPM_IMPORT_SEEN_DIR:-}" ] || return 1
+  printf '%s/%s\n' \
+    "$PI_NIX_NPM_IMPORT_SEEN_DIR" \
+    "$(printf '%s' "$alias" | sha256sum | cut -d' ' -f1)"
+}
+
+seen_already() {
+  local file
+
+  file=$(seen_file_for "$1") || return 1
+  [ -e "$file" ]
+}
+
+mark_seen() {
+  local file
+
+  file=$(seen_file_for "$1") || return 0
+  : >"$file"
+}
+
 bundled_pi_dependency_target() {
   case "$1" in
     @earendil-works/pi-coding-agent)
@@ -60,6 +83,12 @@ import_artifact() {
   local metadata name version description tarball source
   local dependencies dependency_map flat_prefetch unpack_prefetch flat_hash unpack_hash entry
   local dependency_name dependency_range dependency_alias bundled_target
+  local -a dependency_names dependency_ranges dependency_aliases
+
+  if [ -n "${importing[$current_alias]:-}" ] || seen_already "$current_alias"; then
+    return
+  fi
+  importing[$current_alias]=1
 
   metadata=$(
     npm view "$current_spec" name version description dist.tarball dist.integrity dependencies optionalDependencies peerDependencies --json \
@@ -71,11 +100,6 @@ import_artifact() {
   tarball=$(jq -r '."dist.tarball"' <<<"$metadata")
   source="npm:${name}@${version}"
 
-  if [ -n "${importing[$current_alias]:-}" ]; then
-    return
-  fi
-  importing[$current_alias]=1
-
   dependencies=$(jq -c '(.dependencies // {}) + (.optionalDependencies // {}) + (.peerDependencies // {})' <<<"$metadata")
   dependency_map='{}'
   while IFS=$'\t' read -r dependency_name dependency_range; do
@@ -83,9 +107,10 @@ import_artifact() {
     dependency_alias="${dependency_name}@${dependency_range}"
     if bundled_target=$(bundled_pi_dependency_target "$dependency_name"); then
       dependency_alias="pi:${bundled_target}"
-    else
-      import_artifact "$dependency_alias" "${dependency_name}@${dependency_range}"
     fi
+    dependency_names+=("$dependency_name")
+    dependency_ranges+=("$dependency_range")
+    dependency_aliases+=("$dependency_alias")
     dependency_map=$(jq \
       --arg name "$dependency_name" \
       --arg alias "$dependency_alias" \
@@ -103,6 +128,37 @@ import_artifact() {
       end
     ' <<<"$dependencies"
   )
+
+  if jq -e \
+    --arg alias "$current_alias" \
+    --arg source "$source" \
+    --argjson dependencies "$dependency_map" \
+    '
+      . as $root
+      | ($root.npmPackages[$alias]? // null) as $entry
+      | $entry != null
+      and $entry.source == $source
+      and (($entry.hash // "") != "")
+      and (($entry.unpackHash // "") != "")
+      and (($entry.dependencies // {}) == $dependencies)
+      and (
+        $dependencies
+        | to_entries
+        | all(.value as $dependencyAlias |
+            ($dependencyAlias | startswith("pi:"))
+            or ($root.npmPackages[$dependencyAlias]? != null))
+      )
+    ' <<<"$registry_json" >/dev/null; then
+    mark_seen "$current_alias"
+    return
+  fi
+
+  for i in "${!dependency_names[@]}"; do
+    dependency_alias=${dependency_aliases[$i]}
+    if [[ "$dependency_alias" != pi:* ]]; then
+      import_artifact "$dependency_alias" "${dependency_names[$i]}@${dependency_ranges[$i]}"
+    fi
+  done
 
   flat_prefetch=$(nix store prefetch-file --json "$tarball")
   unpack_prefetch=$(nix store prefetch-file --unpack --json "$tarball")
@@ -138,6 +194,7 @@ import_artifact() {
     <<<"$registry_json")
 
   printf '%s: %s\n' "$current_alias" "$source"
+  mark_seen "$current_alias"
 }
 
 import_artifact "$alias_name" "$spec"

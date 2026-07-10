@@ -25,6 +25,20 @@
       "unpackHash": "sha256-BGw2lB8qdNT7fhAWGgM36XwQ90CkIM43eSNXhIHBb+I=",
       "version": "1.19.14"
     },
+    "@isaacs/fs-minipass@^4.0.0": {
+      "autoUpdate": true,
+      "dependencies": {
+        "minipass": "minipass@^7.0.4"
+      },
+      "description": "fs read and write streams based on minipass",
+      "hash": "sha256-esKG48zMHqiYDnniA53va7l9MYLheVHNkJTwQA7ZgjY=",
+      "kind": "npm",
+      "npmPackage": "@isaacs/fs-minipass",
+      "source": "npm:@isaacs/fs-minipass@4.0.1",
+      "tarball": "https://registry.npmjs.org/@isaacs/fs-minipass/-/fs-minipass-4.0.1.tgz",
+      "unpackHash": "sha256-L6jqIgHfwkbgHo7jkSo3HlrrBl37Hl1yItEKs8eX9LY=",
+      "version": "4.0.1"
+    },
     "@joplin/turndown-plugin-gfm@^1.0.64": {
       "autoUpdate": true,
       "description": "Turndown plugin to add GitHub Flavored Markdown extensions.",
@@ -200,6 +214,17 @@
       "unpackHash": "sha256-jS392Sx2Df/shFqV/d89JBLhymOwv3EqXRhcrSLPq5U=",
       "version": "0.1.100"
     },
+    "@napi-rs/canvas-android-arm64@1.0.2": {
+      "autoUpdate": true,
+      "description": "Canvas for Node.js with skia backend",
+      "hash": "sha256-PkK00tykhDTya5L2pNPsR66UnbJw6sGzHlV3ZHK8wOk=",
+      "kind": "npm",
+      "npmPackage": "@napi-rs/canvas-android-arm64",
+      "source": "npm:@napi-rs/canvas-android-arm64@1.0.2",
+      "tarball": "https://registry.npmjs.org/@napi-rs/canvas-android-arm64/-/canvas-android-arm64-1.0.2.tgz",
+      "unpackHash": "sha256-SZaAO27fW5mL2RZy10yMY+iawuCDO1t9MKKLIvHSNNE=",
+      "version": "1.0.2"
+    },
     "@napi-rs/canvas-darwin-arm64@0.1.100": {
       "autoUpdate": true,
       "description": "Canvas for Node.js with skia backend",
@@ -210,6 +235,17 @@
       "tarball": "https://registry.npmjs.org/@napi-rs/canvas-darwin-arm64/-/canvas-darwin-arm64-0.1.100.tgz",
       "unpackHash": "sha256-KKIRz/P+TLk5Dq25qGLl4aedjXuAZ7Xsp/95E8I2KFA=",
       "version": "0.1.100"
+    },
+    "@napi-rs/canvas-darwin-arm64@1.0.2": {
+      "autoUpdate": true,
+      "description": "Canvas for Node.js with skia backend",
+      "hash": "sha256-u2wsBwHmJ6ngheelFQFtmB6Pry63us/cJ+Y3YuNnlc8=",
+      "kind": "npm",
+      "npmPackage": "@napi-rs/canvas-darwin-arm64",
+      "source": "npm:@napi-rs/canvas-darwin-arm64@1.0.2",
+      "tarball": "https://registry.npmjs.org/@napi-rs/canvas-darwin-arm64/-/canvas-darwin-arm64-1.0.2.tgz",
+      "unpackHash": "sha256-VB9H/IK2b5fiViti2BiXNyzblrqJFCk1rAArTWWaq5o=",
+      "version": "1.0.2"
     },
     "@napi-rs/canvas-darwin-x64@0.1.100": {
       "autoUpdate": true,
@@ -222,6 +258,17 @@
       "unpackHash": "sha256-sk+AmXZ13UNfp/cKt1Y5arNAzNOeSl/yiiaoGM7MMvs=",
       "version": "0.1.100"
     },
+    "@napi-rs/canvas-darwin-x64@1.0.2": {
+      "autoUpdate": true,
+      "description": "Canvas for Node.js with skia backend",
+      "hash": "sha256-73WTLnTQgkLqzSFUYUoNEjXUTfWbCGzULHG3GAF1UyU=",
+      "kind": "npm",
+      "npmPackage": "@napi-rs/canvas-darwin-x64",
+      "source": "npm:@napi-rs/canvas-darwin-x64@1.0.2",
+      "tarball": "https://registry.npmjs.org/@napi-rs/canvas-darwin-x64/-/canvas-darwin-x64-1.0.2.tgz",
+      "unpackHash": "sha256-lyWyzJ3vuAAa/G7rDhFiHKiv19C0KuclEmzZqQtwIiw=",
+      "version": "1.0.2"
+    },
     "@napi-rs/canvas-linux-arm-gnueabihf@0.1.100": {
       "autoUpdate": true,
       "description": "Canvas for Node.js with skia backend",
@@ -232,6 +279,17 @@
       "tarball": "https://registry.npmjs.org/@napi-rs/canvas-linux-arm-gnueabihf/-/canvas-linux-arm-gnueabihf-0.1.100.tgz",
       "unpackHash": "sha256-40ejJpk4pKYixaUvuwgn8Ia+rpDCmzylvHOeVc9QkXA=",
       "version": "0.1.100"
+    },
+    "@napi-rs/canvas-linux-arm-gnueabihf@1.0.2": {
+      "autoUpdate": true,
+      "description": "Canvas for Node.js with skia backend",
+      "hash": "sha256-q43lg/PiB04uFZMMBxxYEJJgKq+4prqN9/buewgceDU=",
+      "kind": "npm",
+      "npmPackage": "@napi-rs/canvas-linux-arm-gnueabihf",
+      "source": "npm:@napi-rs/canvas-linux-arm-gnueabihf@1.0.2",
+      "tarball": "https://registry.npmjs.org/@napi-rs/canvas-linux-arm-gnueabihf/-/canvas-linux-arm-gnueabihf-1.0.2.tgz",
+      "unpackHash": "sha256-ZqtTF2cL7D+RrMLZnUWE4WUiGYxia5D8ClxCe+VXW3A=",
+      "version": "1.0.2"
     },
     "@napi-rs/canvas-linux-arm64-gnu@0.1.100": {
       "autoUpdate": true,
@@ -244,6 +302,17 @@
       "unpackHash": "sha256-N037qZGXPyRnCZcuo+cwgRl0SG2YJwP498XNoucogY8=",
       "version": "0.1.100"
     },
+    "@napi-rs/canvas-linux-arm64-gnu@1.0.2": {
+      "autoUpdate": true,
+      "description": "Canvas for Node.js with skia backend",
+      "hash": "sha256-8uYDFGDF6VHH9BREOKY+/rzkqG2MDl71UjFLvtqCIrk=",
+      "kind": "npm",
+      "npmPackage": "@napi-rs/canvas-linux-arm64-gnu",
+      "source": "npm:@napi-rs/canvas-linux-arm64-gnu@1.0.2",
+      "tarball": "https://registry.npmjs.org/@napi-rs/canvas-linux-arm64-gnu/-/canvas-linux-arm64-gnu-1.0.2.tgz",
+      "unpackHash": "sha256-lx36MRC6oCK03AmfdVhf5C5KSHBtueBGNqDVafLlaMU=",
+      "version": "1.0.2"
+    },
     "@napi-rs/canvas-linux-arm64-musl@0.1.100": {
       "autoUpdate": true,
       "description": "Canvas for Node.js with skia backend",
@@ -254,6 +323,17 @@
       "tarball": "https://registry.npmjs.org/@napi-rs/canvas-linux-arm64-musl/-/canvas-linux-arm64-musl-0.1.100.tgz",
       "unpackHash": "sha256-BA1GawmaRRr2VX7N556tZ/b2h8cONqRAPcHccBXlmbI=",
       "version": "0.1.100"
+    },
+    "@napi-rs/canvas-linux-arm64-musl@1.0.2": {
+      "autoUpdate": true,
+      "description": "Canvas for Node.js with skia backend",
+      "hash": "sha256-MAtiR+zNm/9Gl0DC9MHl/67cr/yHQUERwtZJttRHLw8=",
+      "kind": "npm",
+      "npmPackage": "@napi-rs/canvas-linux-arm64-musl",
+      "source": "npm:@napi-rs/canvas-linux-arm64-musl@1.0.2",
+      "tarball": "https://registry.npmjs.org/@napi-rs/canvas-linux-arm64-musl/-/canvas-linux-arm64-musl-1.0.2.tgz",
+      "unpackHash": "sha256-jTiy/9KhM4YEjovE2pDDcaynTfijXB66J/hbwY6yV84=",
+      "version": "1.0.2"
     },
     "@napi-rs/canvas-linux-riscv64-gnu@0.1.100": {
       "autoUpdate": true,
@@ -266,6 +346,17 @@
       "unpackHash": "sha256-39NPKgItw4YNBd3PVvmlijanBqmNXDLtbvRxroECU3E=",
       "version": "0.1.100"
     },
+    "@napi-rs/canvas-linux-riscv64-gnu@1.0.2": {
+      "autoUpdate": true,
+      "description": "Canvas for Node.js with skia backend",
+      "hash": "sha256-6AvFMJfckQ7w6FNjCQ3IoHqZw3WkCvl9CpUlRy8qaF8=",
+      "kind": "npm",
+      "npmPackage": "@napi-rs/canvas-linux-riscv64-gnu",
+      "source": "npm:@napi-rs/canvas-linux-riscv64-gnu@1.0.2",
+      "tarball": "https://registry.npmjs.org/@napi-rs/canvas-linux-riscv64-gnu/-/canvas-linux-riscv64-gnu-1.0.2.tgz",
+      "unpackHash": "sha256-wcEhb3m8UM0M0QduwjmsD8n1NDmLZckpsPLRj+gvQqg=",
+      "version": "1.0.2"
+    },
     "@napi-rs/canvas-linux-x64-gnu@0.1.100": {
       "autoUpdate": true,
       "description": "Canvas for Node.js with skia backend",
@@ -276,6 +367,17 @@
       "tarball": "https://registry.npmjs.org/@napi-rs/canvas-linux-x64-gnu/-/canvas-linux-x64-gnu-0.1.100.tgz",
       "unpackHash": "sha256-N3L/k+VwgLGhIgJF2cnXqVlSD4HQdkdwGobxMriLMEw=",
       "version": "0.1.100"
+    },
+    "@napi-rs/canvas-linux-x64-gnu@1.0.2": {
+      "autoUpdate": true,
+      "description": "Canvas for Node.js with skia backend",
+      "hash": "sha256-0PfnEYt5FwdoLWWbRyP26RRCrHOfXAXXODF2bgupAA0=",
+      "kind": "npm",
+      "npmPackage": "@napi-rs/canvas-linux-x64-gnu",
+      "source": "npm:@napi-rs/canvas-linux-x64-gnu@1.0.2",
+      "tarball": "https://registry.npmjs.org/@napi-rs/canvas-linux-x64-gnu/-/canvas-linux-x64-gnu-1.0.2.tgz",
+      "unpackHash": "sha256-GlwOjcNQQGu4r8qRtGHfS9l9d5VIpiXYmOjTpFVlbXA=",
+      "version": "1.0.2"
     },
     "@napi-rs/canvas-linux-x64-musl@0.1.100": {
       "autoUpdate": true,
@@ -288,6 +390,17 @@
       "unpackHash": "sha256-Sv7Qst0E5pSYoTIUd8vRElvu7/V9f686+yik5tTRj3k=",
       "version": "0.1.100"
     },
+    "@napi-rs/canvas-linux-x64-musl@1.0.2": {
+      "autoUpdate": true,
+      "description": "Canvas for Node.js with skia backend",
+      "hash": "sha256-tJBNbsN9V7ZQ0U19dbaOJxhjW4oJUTlzPQqYabNat5o=",
+      "kind": "npm",
+      "npmPackage": "@napi-rs/canvas-linux-x64-musl",
+      "source": "npm:@napi-rs/canvas-linux-x64-musl@1.0.2",
+      "tarball": "https://registry.npmjs.org/@napi-rs/canvas-linux-x64-musl/-/canvas-linux-x64-musl-1.0.2.tgz",
+      "unpackHash": "sha256-3ql16znkGH2Q+DOJRWyxw1yayNRdVj6OCWkasEyyfFA=",
+      "version": "1.0.2"
+    },
     "@napi-rs/canvas-win32-arm64-msvc@0.1.100": {
       "autoUpdate": true,
       "description": "Canvas for Node.js with skia backend",
@@ -299,6 +412,17 @@
       "unpackHash": "sha256-hSSDG8Kl9TMlQuB9bdPXnSOQmpwHsl3u1Omu5pzK3jM=",
       "version": "0.1.100"
     },
+    "@napi-rs/canvas-win32-arm64-msvc@1.0.2": {
+      "autoUpdate": true,
+      "description": "Canvas for Node.js with skia backend",
+      "hash": "sha256-PZzOn21Lz5vcUQk1coO6jqkzvaWGJGHEtRsZFrXe9C8=",
+      "kind": "npm",
+      "npmPackage": "@napi-rs/canvas-win32-arm64-msvc",
+      "source": "npm:@napi-rs/canvas-win32-arm64-msvc@1.0.2",
+      "tarball": "https://registry.npmjs.org/@napi-rs/canvas-win32-arm64-msvc/-/canvas-win32-arm64-msvc-1.0.2.tgz",
+      "unpackHash": "sha256-JX4WMNB5dxeyxVlkqfpaNLF8K5Bf29S5K/qwQYpSSx0=",
+      "version": "1.0.2"
+    },
     "@napi-rs/canvas-win32-x64-msvc@0.1.100": {
       "autoUpdate": true,
       "description": "Canvas for Node.js with skia backend",
@@ -309,6 +433,17 @@
       "tarball": "https://registry.npmjs.org/@napi-rs/canvas-win32-x64-msvc/-/canvas-win32-x64-msvc-0.1.100.tgz",
       "unpackHash": "sha256-YA50qcIxzqGZrQrRTH++ZvNnI3Jydd70GDPFAxXcJzs=",
       "version": "0.1.100"
+    },
+    "@napi-rs/canvas-win32-x64-msvc@1.0.2": {
+      "autoUpdate": true,
+      "description": "Canvas for Node.js with skia backend",
+      "hash": "sha256-LVM3qumpjlE/K2zQXAb0CE4L8o8vsyAe6uzuVF9awOQ=",
+      "kind": "npm",
+      "npmPackage": "@napi-rs/canvas-win32-x64-msvc",
+      "source": "npm:@napi-rs/canvas-win32-x64-msvc@1.0.2",
+      "tarball": "https://registry.npmjs.org/@napi-rs/canvas-win32-x64-msvc/-/canvas-win32-x64-msvc-1.0.2.tgz",
+      "unpackHash": "sha256-Qee6ShopSGb1VBYgPX1Ir1aAF4fRbBZ9k0nws/PNnfc=",
+      "version": "1.0.2"
     },
     "@napi-rs/canvas@^0.1.69": {
       "autoUpdate": true,
@@ -971,6 +1106,17 @@
       "unpackHash": "sha256-yk075w2zPxROzkZzeyrgw2i5oI3QmUM8I8YJ/HKEZgw=",
       "version": "1.1.1"
     },
+    "abbrev@^3.0.0": {
+      "autoUpdate": true,
+      "description": "Like ruby's abbrev module, but in js",
+      "hash": "sha256-56OX8ampp6g0msJXK0URn53GlaDb5Pkzdr428XbdeOs=",
+      "kind": "npm",
+      "npmPackage": "abbrev",
+      "source": "npm:abbrev@3.0.1",
+      "tarball": "https://registry.npmjs.org/abbrev/-/abbrev-3.0.1.tgz",
+      "unpackHash": "sha256-cx4uKlc/vQIO/+EdiPHFyOyBuZkeXgKLy0+/feuaO0k=",
+      "version": "3.0.1"
+    },
     "accepts@^2.0.0": {
       "autoUpdate": true,
       "dependencies": {
@@ -1014,6 +1160,17 @@
       "tarball": "https://registry.npmjs.org/agent-base/-/agent-base-6.0.2.tgz",
       "unpackHash": "sha256-AQld7XJmKIUaV57uNtAsbtxHDp/V8psPWC/xn8srfhE=",
       "version": "6.0.2"
+    },
+    "agent-base@^7.1.2": {
+      "autoUpdate": true,
+      "description": "Turn a function into an `http.Agent` instance",
+      "hash": "sha256-fdSmFmippOjU6QPxolT5TVPa/T8xbyubWXxa2MectX4=",
+      "kind": "npm",
+      "npmPackage": "agent-base",
+      "source": "npm:agent-base@7.1.4",
+      "tarball": "https://registry.npmjs.org/agent-base/-/agent-base-7.1.4.tgz",
+      "unpackHash": "sha256-kOiiQvQ0kZc0JVQ9BHf7CEXlR84n8pZho1D8oh9CpyU=",
+      "version": "7.1.4"
     },
     "ajv-formats@^3.0.1": {
       "autoUpdate": true,
@@ -1419,6 +1576,17 @@
       "tarball": "https://registry.npmjs.org/chownr/-/chownr-2.0.0.tgz",
       "unpackHash": "sha256-P8fmuhs4prbrmpSYt6OpPLFNZD07GXVnT3yCWoMutkY=",
       "version": "2.0.0"
+    },
+    "chownr@^3.0.0": {
+      "autoUpdate": true,
+      "description": "like `chown -R`",
+      "hash": "sha256-TCT12qYwFCJS2oneZV998JDqR5RQqIJYl3UdeDIbE2A=",
+      "kind": "npm",
+      "npmPackage": "chownr",
+      "source": "npm:chownr@3.0.0",
+      "tarball": "https://registry.npmjs.org/chownr/-/chownr-3.0.0.tgz",
+      "unpackHash": "sha256-csGd+NFhqp7NQlkQZ/uw6NA0ywYZhVM1x3IAsiRUitM=",
+      "version": "3.0.0"
     },
     "citty@^0.1.6": {
       "autoUpdate": true,
@@ -2889,6 +3057,21 @@
       "unpackHash": "sha256-02M71F+3Y2l1gbLk9upzpL6IU7T0t6cbtIgaQzGFQW8=",
       "version": "5.0.1"
     },
+    "https-proxy-agent@^7.0.5": {
+      "autoUpdate": true,
+      "dependencies": {
+        "agent-base": "agent-base@^7.1.2",
+        "debug": "debug@4"
+      },
+      "description": "An HTTP(s) proxy `http.Agent` implementation for HTTPS",
+      "hash": "sha256-lg+J6OUkCIL2QknQSlOEId051i/6zBOFRGR8wyUbwOA=",
+      "kind": "npm",
+      "npmPackage": "https-proxy-agent",
+      "source": "npm:https-proxy-agent@7.0.6",
+      "tarball": "https://registry.npmjs.org/https-proxy-agent/-/https-proxy-agent-7.0.6.tgz",
+      "unpackHash": "sha256-shCaax00d5pLKmU9WXmJzkCsT/jTdu2EpTDrgBsqEdk=",
+      "version": "7.0.6"
+    },
     "iconv-lite@^0.6.2": {
       "autoUpdate": true,
       "dependencies": {
@@ -3544,6 +3727,28 @@
       "unpackHash": "sha256-EpARmx+SxCMGPYSDCkM2K3H6L/DqUB+albr1w41NK+w=",
       "version": "5.0.0"
     },
+    "minipass@^7.0.4": {
+      "autoUpdate": true,
+      "description": "minimal implementation of a PassThrough stream",
+      "hash": "sha256-UqxhvnQ3VeP9yY5WAIbQ1KHix/02Qzh3kts44yLSfRI=",
+      "kind": "npm",
+      "npmPackage": "minipass",
+      "source": "npm:minipass@7.1.3",
+      "tarball": "https://registry.npmjs.org/minipass/-/minipass-7.1.3.tgz",
+      "unpackHash": "sha256-+2jTHP5eyebUGE4AwvovFwvCnq0FfJNFP5XeboelZ14=",
+      "version": "7.1.3"
+    },
+    "minipass@^7.1.2": {
+      "autoUpdate": true,
+      "description": "minimal implementation of a PassThrough stream",
+      "hash": "sha256-UqxhvnQ3VeP9yY5WAIbQ1KHix/02Qzh3kts44yLSfRI=",
+      "kind": "npm",
+      "npmPackage": "minipass",
+      "source": "npm:minipass@7.1.3",
+      "tarball": "https://registry.npmjs.org/minipass/-/minipass-7.1.3.tgz",
+      "unpackHash": "sha256-+2jTHP5eyebUGE4AwvovFwvCnq0FfJNFP5XeboelZ14=",
+      "version": "7.1.3"
+    },
     "minizlib@^2.1.1": {
       "autoUpdate": true,
       "dependencies": {
@@ -3558,6 +3763,20 @@
       "tarball": "https://registry.npmjs.org/minizlib/-/minizlib-2.1.2.tgz",
       "unpackHash": "sha256-wTrwx8sskCvs9IpE4tRWg3B/4t+nZUGwwIe68dIutmY=",
       "version": "2.1.2"
+    },
+    "minizlib@^3.1.0": {
+      "autoUpdate": true,
+      "dependencies": {
+        "minipass": "minipass@^7.1.2"
+      },
+      "description": "A small fast zlib stream built on [minipass](http://npm.im/minipass) and Node.js's zlib binding.",
+      "hash": "sha256-mb8uKWGBct1x8GVHN0kMaPcbx+I3nUc+OPn+8tvs4uM=",
+      "kind": "npm",
+      "npmPackage": "minizlib",
+      "source": "npm:minizlib@3.1.0",
+      "tarball": "https://registry.npmjs.org/minizlib/-/minizlib-3.1.0.tgz",
+      "unpackHash": "sha256-Gyc+EvHvw8rbrDqfXsAwiyvALhm6G2ekwmAUIc4EJC8=",
+      "version": "3.1.0"
     },
     "mkdirp@^1.0.3": {
       "autoUpdate": true,
@@ -3715,6 +3934,20 @@
       "tarball": "https://registry.npmjs.org/nopt/-/nopt-5.0.0.tgz",
       "unpackHash": "sha256-V8Sa0wPxhzKmkBC2vyDOXRz7eL4Bn8UnjYE3S061Pzk=",
       "version": "5.0.0"
+    },
+    "nopt@^8.0.0": {
+      "autoUpdate": true,
+      "dependencies": {
+        "abbrev": "abbrev@^3.0.0"
+      },
+      "description": "Option parsing for Node, supporting types, shorthands, etc. Used by npm.",
+      "hash": "sha256-YKun1jC7QLw4ZXfxb85kqW9GMZiPpIp3QkL53uQQ8KY=",
+      "kind": "npm",
+      "npmPackage": "nopt",
+      "source": "npm:nopt@8.1.0",
+      "tarball": "https://registry.npmjs.org/nopt/-/nopt-8.1.0.tgz",
+      "unpackHash": "sha256-HHfbEVTTvKU33r89+hQDOXei6NZ28/IdwrRt61I0ZNw=",
+      "version": "8.1.0"
     },
     "npmlog@^5.0.1": {
       "autoUpdate": true,
@@ -4557,6 +4790,17 @@
       "unpackHash": "sha256-gDDGCQ1GrrkHkuIkEnxjPOnEY0ch2VMGojZmqQi/yMk=",
       "version": "7.8.5"
     },
+    "semver@^7.5.3": {
+      "autoUpdate": true,
+      "description": "The semantic version parser used by npm.",
+      "hash": "sha256-2FBF1DANfVfIkTNrld9TLnPzTCL/zSIkUrbQi50SfV0=",
+      "kind": "npm",
+      "npmPackage": "semver",
+      "source": "npm:semver@7.8.5",
+      "tarball": "https://registry.npmjs.org/semver/-/semver-7.8.5.tgz",
+      "unpackHash": "sha256-gDDGCQ1GrrkHkuIkEnxjPOnEY0ch2VMGojZmqQi/yMk=",
+      "version": "7.8.5"
+    },
     "send@^1.1.0": {
       "autoUpdate": true,
       "dependencies": {
@@ -5056,6 +5300,24 @@
       "unpackHash": "sha256-4Q09LaugyPGo2e4cbYALlYV9nQuXFw+c1Ev+mUiacME=",
       "version": "6.2.1"
     },
+    "tar@^7.4.0": {
+      "autoUpdate": true,
+      "dependencies": {
+        "@isaacs/fs-minipass": "@isaacs/fs-minipass@^4.0.0",
+        "chownr": "chownr@^3.0.0",
+        "minipass": "minipass@^7.1.2",
+        "minizlib": "minizlib@^3.1.0",
+        "yallist": "yallist@^5.0.0"
+      },
+      "description": "tar for node",
+      "hash": "sha256-GRZE+Ix9vWESH5EyMasyjR/GIfBY6MozRFGxfK2F364=",
+      "kind": "npm",
+      "npmPackage": "tar",
+      "source": "npm:tar@7.5.19",
+      "tarball": "https://registry.npmjs.org/tar/-/tar-7.5.19.tgz",
+      "unpackHash": "sha256-+AI/ryoCRm3XcsLzn6AGUnFFRWFk//pyk10equItSkA=",
+      "version": "7.5.19"
+    },
     "toidentifier@~1.0.1": {
       "autoUpdate": true,
       "description": "Convert a string of words to a JavaScript identifier",
@@ -5532,6 +5794,17 @@
       "unpackHash": "sha256-JQNNkqswg1ZH4o8PQS2R8WsZWJtv/5R3vRgc4d1vDR0=",
       "version": "4.0.0"
     },
+    "yallist@^5.0.0": {
+      "autoUpdate": true,
+      "description": "Yet Another Linked List",
+      "hash": "sha256-fJ1D26t8qzsxM7Dmpa8UAUSCKFMWs57J9QjvrdnrzpU=",
+      "kind": "npm",
+      "npmPackage": "yallist",
+      "source": "npm:yallist@5.0.0",
+      "tarball": "https://registry.npmjs.org/yallist/-/yallist-5.0.0.tgz",
+      "unpackHash": "sha256-S0095pyfOWxqT+3vQkIMc1z5f83TkmIb0FS1a3gAyuY=",
+      "version": "5.0.0"
+    },
     "yocto-queue@^1.1.1": {
       "autoUpdate": true,
       "description": "Tiny queue data structure",
@@ -5616,18 +5889,18 @@
   "packages": {
     "pi": {
       "autoUpdate": true,
-      "hash": "sha256-FVxYABNMuN9sR62z6rVkFej6d0bgscumaHE0E3xFHZA=",
+      "hash": "sha256-KndjRkCy2G2Q0kCHu2dVns8jZuD7UqQsVe7UFhR9pBE=",
       "kind": "agent",
       "npmLockIntegrities": {
-        "node_modules/@earendil-works/pi-agent-core": "sha512-3qw0/GeRQBU/nlGjDe5Yb7ePKTmoxefx2YxyKMFAviFUMXpFexBG/hS7mBtwFahFvzrrTPPoRT6sFIDjwoDWPQ==",
-        "node_modules/@earendil-works/pi-ai": "sha512-jPZLMeGL5kkMSEAwAklfXTMHqZvfhsJtCCpKGIr5Duk7mc0n4skjB1dugk7y0z3z8ZHIUCmPAWHdyDqgUz5vdA==",
-        "node_modules/@earendil-works/pi-tui": "sha512-2BJI6qwRQfnM0Q7seL1+SbacU/jRRjBnN7Hu3n9BjAn7/s5FaBNnvdD1qBQYRsFTHfjqMaDsjYqanPyqwXj99w=="
+        "node_modules/@earendil-works/pi-agent-core": "sha512-Lvn89ko42h5ETUb6Z0Ku6ldskEqXaTdQBYvSa0+7bdG9V6rUEpXptv5e0OVZ1HDcvi8s6/2lGCQWsxKX+DFHNw==",
+        "node_modules/@earendil-works/pi-ai": "sha512-7xfLk8sANBp+bpPEbjoOZTbPxsa+++b1JXAoSJsNa3vbs9AHHEclmvg54XLQcxH+fuwaeti/g2jeIfJ+mVYLpA==",
+        "node_modules/@earendil-works/pi-tui": "sha512-bSuzS4EVSqEPj/Qr/p9eqCESfKsGuDNbl77EGci8Iaqqt/C/XCBZL1MjXaxSWW1NsT5afjp/Cb0NTPzOLv/aPA=="
       },
       "npmPackage": "@earendil-works/pi-coding-agent",
-      "source": "npm:@earendil-works/pi-coding-agent@0.80.3",
-      "tarball": "https://registry.npmjs.org/@earendil-works/pi-coding-agent/-/pi-coding-agent-0.80.3.tgz",
-      "unpackHash": "sha256-yILNKCVfOgO4o7Cgy0q+GyIMVouqa3kktc7eRCKTW5g=",
-      "version": "0.80.3"
+      "source": "npm:@earendil-works/pi-coding-agent@0.80.6",
+      "tarball": "https://registry.npmjs.org/@earendil-works/pi-coding-agent/-/pi-coding-agent-0.80.6.tgz",
+      "unpackHash": "sha256-KH+4BBMN6goWdnhI4V+Fk4v7PL/2PD5CjSmeOmGcl4o=",
+      "version": "0.80.6"
     }
   },
   "piPackages": {
@@ -5650,11 +5923,11 @@
       "version": "1.3.1"
     },
     "autoresearch": {
-      "autoUpdate": false,
+      "autoUpdate": true,
       "category": "research",
       "description": "Autonomous experiment loop for pi — run, measure, keep or discard. Inspired by karpathy/autoresearch.",
       "githubRepo": "davebcn87/pi-autoresearch",
-      "hash": "sha256-XDf9CtCEve2VLcp8ZY03EQlu7IkkIdCicqlfUOZMtJE=",
+      "hash": "sha256-BTJhiLlCTupnI4w4DQpq/cWptNXxjnKaR/VsMRb7BmU=",
       "kind": "extension",
       "module": "autoresearch",
       "nodeModuleDependencies": {
@@ -5664,10 +5937,10 @@
         "@sinclair/typebox": "@sinclair/typebox@*"
       },
       "package": "pi-autoresearch",
-      "ref": "9c8cc2a8306c8abcf832d20d6ac06a66b1efcc2d",
-      "source": "git:github.com/davebcn87/pi-autoresearch@9c8cc2a8306c8abcf832d20d6ac06a66b1efcc2d",
+      "ref": "v1.6.2",
+      "source": "git:github.com/davebcn87/pi-autoresearch@v1.6.2",
       "sourceKind": "github",
-      "tarball": "https://github.com/davebcn87/pi-autoresearch/archive/9c8cc2a8306c8abcf832d20d6ac06a66b1efcc2d.tar.gz",
+      "tarball": "https://github.com/davebcn87/pi-autoresearch/archive/v1.6.2.tar.gz",
       "unpackHash": "sha256-RmuY5YklpUeW1T4aOBEY46qOrzef1ph35J8C9Tq4dDI=",
       "version": "1.6.2"
     },
