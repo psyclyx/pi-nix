@@ -85,6 +85,38 @@ rec {
       };
     };
 
+  # Per-package config passthrough shared by registry and custom packages.
+  # Lets a package carry its own settings.json fields, sidecar JSON files, and
+  # environment variables at its definition site instead of forcing the user to
+  # hand-write them into the global pi.settings / pi.files / pi.environment.
+  packageConfigOptions = {
+    settings = lib.mkOption {
+      type = types.attrsOf types.anything;
+      default = { };
+      description = "Additional settings.json fields contributed by this package.";
+    };
+
+    files = lib.mkOption {
+      type = types.attrsOf types.anything;
+      default = { };
+      description = "JSON files written under PI_CODING_AGENT_DIR for this package (e.g. mcp.json, web-search.json).";
+    };
+
+    environment = lib.mkOption {
+      type = types.attrsOf types.str;
+      default = { };
+      description = "Environment variables exported by the generated wrapper for this package.";
+    };
+  };
+
+  # Merge the packageConfigOptions of a set of enabled packages into the
+  # corresponding global pi.* option definitions.
+  mergePackageConfig = enabled: {
+    pi.settings = lib.mkMerge (lib.mapAttrsToList (_: cfg: cfg.settings) enabled);
+    pi.files = lib.mkMerge (lib.mapAttrsToList (_: cfg: cfg.files) enabled);
+    pi.environment = lib.mkMerge (lib.mapAttrsToList (_: cfg: cfg.environment) enabled);
+  };
+
   packageEntry =
     cfg:
     clean {

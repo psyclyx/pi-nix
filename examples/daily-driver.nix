@@ -15,38 +15,23 @@
     launcherName = "pi";
     auth.mode = "existing";
     projectConfig = "ask";
-    telemetry = false;
-    installTelemetry = false;
   };
 
-  pi.core = {
+  # Telemetry/analytics are off by default via pi.telemetry.enable.
+
+  pi.settings = {
     quietStartup = true;
-    enableAnalytics = false;
-    resources.enableSkillCommands = true;
+    enableSkillCommands = true;
     compaction.enabled = true;
   };
 
-  pi.settings = {
-    model = "pi";
-    instructions = [
-      "Read the repository before editing."
-      "Keep changes scoped to the requested task."
-      "Prefer package-managed tools and configuration over ad hoc global state."
-    ];
-    tools = {
-      git = true;
-      shell = true;
-    };
-    workspace.search = "ripgrep";
-  };
-
-  pi.packages = {
+  pi.packages.registry = {
     superpowers.enable = true;
-    askUser.enable = true;
+    pi-ask-user.enable = true;
     plan.enable = true;
-    addDir.enable = true;
-    claudeCli.enable = true;
-    rawPaste.enable = true;
+    add-dir.enable = true;
+    claude-cli.enable = true;
+    raw-paste.enable = true;
     usage.enable = true;
   };
 }

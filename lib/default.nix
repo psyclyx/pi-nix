@@ -37,6 +37,23 @@ let
       lib.mapAttrsToList (name: value: "export ${name}=${lib.escapeShellArg value}") environment
     );
 
+  exportFileCommands =
+    environmentFiles:
+    lib.concatStringsSep "\n" (
+      lib.mapAttrsToList (
+        name: path:
+        ''
+          if [ ! -r ${lib.escapeShellArg path} ]; then
+            printf 'pi-nix: cannot read secret file for %s: %s\n' ${lib.escapeShellArg name} ${lib.escapeShellArg path} >&2
+            exit 1
+          fi
+          __pi_nix_secret_value="$(tr -d '\r\n' < ${lib.escapeShellArg path})"
+          export ${name}="$__pi_nix_secret_value"
+          unset __pi_nix_secret_value
+        ''
+      ) environmentFiles
+    );
+
   exportAgentDirCommands =
     environment:
     lib.concatStringsSep "\n" (
@@ -132,6 +149,7 @@ rec {
               export PI_PACKAGE_DIR="$pi_package_dir"
               ${exportAgentDirCommands cfg.agentDirEnvironment}
               ${exportCommands cfg.environment}
+              ${exportFileCommands cfg.environmentFiles}
 
               exec ${lib.getExe cfg.package} ${wrapperArgsString} "$@"
             '';

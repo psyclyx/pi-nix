@@ -101,18 +101,6 @@ in
       description = "Set PI_SKIP_VERSION_CHECK when non-null.";
     };
 
-    telemetry = lib.mkOption {
-      type = types.nullOr types.bool;
-      default = null;
-      description = "Set PI_TELEMETRY when non-null.";
-    };
-
-    installTelemetry = lib.mkOption {
-      type = types.nullOr types.bool;
-      default = null;
-      description = "Whether generated settings should allow Pi install/update telemetry. Null omits the setting.";
-    };
-
     extraArgs = lib.mkOption {
       type = types.listOf types.str;
       default = [ ];
@@ -124,22 +112,15 @@ in
     pi.package = lib.mkDefault (piPackages.pi or null);
 
     pi.environment =
-      lib.optionalAttrs (cfg.telemetry != null) {
-        PI_TELEMETRY = if cfg.telemetry then "1" else "0";
-      }
-      // lib.optionalAttrs (cfg.skipVersionCheck != null) {
+      lib.optionalAttrs (cfg.skipVersionCheck != null) {
         PI_SKIP_VERSION_CHECK = if cfg.skipVersionCheck then "1" else "0";
       }
       // lib.optionalAttrs cfg.offline {
         PI_OFFLINE = "1";
       };
 
-    pi.settings = lib.optionalAttrs (cfg.installTelemetry != null) {
-      enableInstallTelemetry = lib.mkDefault cfg.installTelemetry;
+    pi.settings = lib.optionalAttrs (cfg.projectConfig != null) {
+      defaultProjectTrust = lib.mkDefault cfg.projectConfig;
     };
-
-    pi.core.defaultProjectTrust = lib.mkIf (cfg.projectConfig != null) (
-      lib.mkDefault cfg.projectConfig
-    );
   };
 }

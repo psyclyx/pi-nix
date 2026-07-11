@@ -72,36 +72,44 @@ config. CLI trust/context behavior is left to Pi unless you set
 
 ## Packages
 
-Curated packages are exposed as typed module options under `pi.packages.*`.
-Most mirror the LazyPi package catalog; Superpowers is added separately from the
-official `obra/superpowers` Pi package. `examples/daily-driver.nix` enables a
-small default set without embedding secrets or enabling browser-cookie access.
+Packages get into a Pi profile two ways. There is no per-package typed module —
+package-specific settings are set through freeform `pi.settings` / `pi.files` /
+`pi.environment`.
 
-The current catalog is:
-
-```text
-subagents, askUser, mcp, webAccess, memory, plan, simplify, addDir,
-promptTemplates, claudeCli, plannotator, slopchop, extensionSettings, powerbar,
-usage, rawPaste, todos, btw, interactiveShell, autoresearch, ralphWiggum,
-compound, hackerman, curatedThemes, terminalTheme
-```
-
-The additional curated package is `superpowers`.
-
-Compound is modeled as a generated local Pi package in the Nix store. Enabling
-`pi.packages.compound` also enables `subagents` and `askUser` by default because
-the generated skills rely on those tools.
-
-For personal config, local iteration, or a package from git/npm that does not
-yet have a typed module, use `pi.packages.custom`:
+`pi.packages.registry.<name>` resolves a curated package by name from the pinned
+registry and builds it as a Nix-managed, offline source. The attribute name is
+the registry entry name. Each entry exposes the generic resource knobs from
+`packageResourceOptions` (`source`, `developmentPath`, `autoload`,
+`extensions`/`skills`/`prompts`/`themes` filters) plus an `order` for its
+position in the settings.json `packages` array.
 
 ```nix
 {
-  pi.packages.webAccess = {
-    enable = true;
-    workflow = "none";
+  pi.packages.registry = {
+    superpowers.enable = true;
+    pi-ask-user.enable = true;
+    plan.enable = true;
+    usage.enable = true;
   };
+}
+```
 
+Registry entry names live in `registry/packages.json` under `piPackages`:
+
+```text
+add-dir, autoresearch, btw, claude-cli, curated-themes,
+extension-settings, hackerman, interactive-shell, mcp, memory,
+pi-ask-user, plan, plannotator, powerbar, prompt-templates, ralph-wiggum,
+raw-paste, simplify, slopchop, subagents, superpowers, terminal-theme, todos,
+usage, web-access
+```
+
+`pi.packages.custom.<name>` takes an arbitrary `source` string (`npm:`, `git:`,
+a protocol URL, or a path) that Pi fetches at runtime, and carries its own
+freeform `settings`/`files`/`environment` for anything a package needs:
+
+```nix
+{
   pi.packages.custom.myPackage = {
     source = "git:github.com/me/my-pi-package@v1";
     developmentPath = "/home/me/src/my-pi-package";
@@ -109,6 +117,37 @@ yet have a typed module, use `pi.packages.custom`:
   };
 }
 ```
+
+## Web Search Secrets
+
+`pi-web-access` reads provider keys from environment variables, so pi-nix exposes
+`pi.webSearch.keyFiles` for secrets instead of putting API keys in
+`web-search.json` or the Nix store. Each value is a runtime path read by the
+generated launcher before Pi starts.
+
+```nix
+{
+  pi.webSearch = {
+    settings = {
+      provider = "exa";
+      workflow = "none";
+      allowBrowserCookies = false;
+    };
+
+    keyFiles = {
+      openai = "/run/secrets/openai-api-key";
+      brave = "/run/secrets/brave-api-key";
+      exa = "/run/secrets/exa-api-key";
+    };
+  };
+}
+```
+
+Setting `pi.webSearch.settings` or `pi.webSearch.keyFiles` enables the
+`web-access` registry package by default. Known API-key fields such as
+`openaiApiKey` and `geminiApiKey` trigger an evaluation warning under
+`pi.webSearch.settings`; prefer `keyFiles` or the generic
+`pi.environmentFiles` option so secrets stay out of the Nix store.
 
 ## Registry
 

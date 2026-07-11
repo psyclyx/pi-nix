@@ -1,6 +1,6 @@
 [
   ./core.nix
   ./runtime.nix
-  ./settings.nix
+  ./web-search.nix
 ]
 ++ import ./packages

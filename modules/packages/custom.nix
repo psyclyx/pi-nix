@@ -46,28 +46,16 @@ let
         themes = packageLib.nullable (types.listOf types.str) // {
           description = "Theme filters. Null loads package defaults; [] loads none.";
         };
-
-        settings = lib.mkOption {
-          type = types.attrsOf types.anything;
-          default = { };
-          description = "Additional settings.json fields required by this package.";
-        };
-
-        files = lib.mkOption {
-          type = types.attrsOf types.anything;
-          default = { };
-          description = "JSON files written under PI_CODING_AGENT_DIR for this package.";
-        };
-
-        environment = lib.mkOption {
-          type = types.attrsOf types.str;
-          default = { };
-          description = "Environment variables exported by the generated wrapper for this package.";
-        };
-      };
+      }
+      // packageLib.packageConfigOptions;
     };
 
-  enabled = lib.filterAttrs (_: cfg: cfg.enable) config.pi.packages.custom;
+  packageItems = lib.mapAttrsToList (
+    name: cfg: {
+      inherit name cfg;
+    }
+  ) config.pi.packages.custom;
+  enabled = lib.filter (item: item.cfg.enable) packageItems;
 in
 {
   options.pi.packages.custom = lib.mkOption {
@@ -76,10 +64,10 @@ in
     description = "Named custom Pi packages loaded through normal settings.json package entries.";
   };
 
-  config = lib.mkIf (enabled != { }) {
-    pi.packageEntries = lib.mapAttrsToList (_: cfg: packageLib.packageEntry cfg) enabled;
-    pi.settings = lib.mkMerge (lib.mapAttrsToList (_: cfg: cfg.settings) enabled);
-    pi.files = lib.mkMerge (lib.mapAttrsToList (_: cfg: cfg.files) enabled);
-    pi.environment = lib.mkMerge (lib.mapAttrsToList (_: cfg: cfg.environment) enabled);
+  config = {
+    pi.packageEntries = map (item: packageLib.packageEntry item.cfg) enabled;
+    pi.settings = lib.mkMerge (map (item: item.cfg.settings) enabled);
+    pi.files = lib.mkMerge (map (item: item.cfg.files) enabled);
+    pi.environment = lib.mkMerge (map (item: item.cfg.environment) enabled);
   };
 }

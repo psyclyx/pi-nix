@@ -1,9 +1,4 @@
 [
-  ./btw.nix
   ./custom.nix
-  ./lazypi.nix
-  ./mcp.nix
-  ./subagents.nix
-  ./superpowers.nix
-  ./web-access.nix
+  ./registry.nix
 ]

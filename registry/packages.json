@@ -1271,17 +1271,6 @@
       "unpackHash": "sha256-6xIfdvWgo7qjBYOsYb2ONE1VoJTC1+6TSooyZlqqhVM=",
       "version": "1.0.10"
     },
-    "argparse@^2.0.1": {
-      "autoUpdate": true,
-      "description": "CLI arguments parser. Native port of python's argparse.",
-      "hash": "sha256-J5A4R/yCFeb8WjPoFJD3urpmQD+KreM3cbmIzKCXcow=",
-      "kind": "npm",
-      "npmPackage": "argparse",
-      "source": "npm:argparse@2.0.1",
-      "tarball": "https://registry.npmjs.org/argparse/-/argparse-2.0.1.tgz",
-      "unpackHash": "sha256-+v7oJKHcy2HR8XoEtVbDpl5zL5DeGcDB2Q3HO7xJaLc=",
-      "version": "2.0.1"
-    },
     "array-flatten@1.1.1": {
       "autoUpdate": true,
       "description": "Flatten an array of nested arrays into a single flat array",
@@ -1588,20 +1577,6 @@
       "unpackHash": "sha256-csGd+NFhqp7NQlkQZ/uw6NA0ywYZhVM1x3IAsiRUitM=",
       "version": "3.0.0"
     },
-    "citty@^0.1.6": {
-      "autoUpdate": true,
-      "dependencies": {
-        "consola": "consola@^3.2.3"
-      },
-      "description": "Elegant CLI Builder",
-      "hash": "sha256-XDv47rZum5z6X2LxyTql6DUjIwSiW6R5asbh2Ek65TE=",
-      "kind": "npm",
-      "npmPackage": "citty",
-      "source": "npm:citty@0.1.6",
-      "tarball": "https://registry.npmjs.org/citty/-/citty-0.1.6.tgz",
-      "unpackHash": "sha256-bQiTvhn2laNH7DxX7/qcr5sjRyXvwQCyW874xL6CwsY=",
-      "version": "0.1.6"
-    },
     "color-support@^1.1.2": {
       "autoUpdate": true,
       "description": "A module which will endeavor to guess your terminal's level of color support.",
@@ -1634,17 +1609,6 @@
       "tarball": "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz",
       "unpackHash": "sha256-ZY5/rMtzNK56p81EGaPcoIRr+J9j7yWh4szGxIOFYFA=",
       "version": "0.0.1"
-    },
-    "consola@^3.2.3": {
-      "autoUpdate": true,
-      "description": "Elegant Console Wrapper",
-      "hash": "sha256-2p/eAKfPi8AXBocrSzbkeRtr5eWjMwtTnHAqr1H7DnE=",
-      "kind": "npm",
-      "npmPackage": "consola",
-      "source": "npm:consola@3.4.2",
-      "tarball": "https://registry.npmjs.org/consola/-/consola-3.4.2.tgz",
-      "unpackHash": "sha256-2Y+09CEdrLE+b32sNcAZDQRQ7ZXlq9JXoRYtvYlFHxA=",
-      "version": "3.4.2"
     },
     "console-control-strings@^1.0.0": {
       "autoUpdate": true,
@@ -3317,20 +3281,6 @@
       "tarball": "https://registry.npmjs.org/js-yaml/-/js-yaml-3.15.0.tgz",
       "unpackHash": "sha256-Ra/PtnkdW7mhU+YNBoEGH/jlc+9KeUOAhRXluv0I+C4=",
       "version": "3.15.0"
-    },
-    "js-yaml@^4.1.0": {
-      "autoUpdate": true,
-      "dependencies": {
-        "argparse": "argparse@^2.0.1"
-      },
-      "description": "YAML 1.2 parser and serializer",
-      "hash": "sha256-hZTuNElt0uQeyTT9IChD3Jk76astfV1HV5FGli+9+uY=",
-      "kind": "npm",
-      "npmPackage": "js-yaml",
-      "source": "npm:js-yaml@4.3.0",
-      "tarball": "https://registry.npmjs.org/js-yaml/-/js-yaml-4.3.0.tgz",
-      "unpackHash": "sha256-4eZOpi1b5nk1lRPxqNXRq9td3MazHUKkvKYhXgwTuHk=",
-      "version": "4.3.0"
     },
     "json-schema-traverse@^1.0.0": {
       "autoUpdate": true,
@@ -5979,23 +5929,6 @@
       "tarball": "https://registry.npmjs.org/pi-claude-cli/-/pi-claude-cli-0.3.1.tgz",
       "unpackHash": "sha256-V4IA2JawKKwdiThsCv2vo7qZcnW4QWo/AqzBYo59vCs=",
       "version": "0.3.1"
-    },
-    "compound": {
-      "autoUpdate": true,
-      "category": "frameworks",
-      "description": "Official Compound Engineering plugin for Claude Code, Codex, and more",
-      "hash": "sha256-OtwG/7Oz0H5lYwsAJVOIxYVsDruTrM5PCJK6sXzbB3U=",
-      "kind": "extension",
-      "module": "compound",
-      "nodeModuleDependencies": {
-        "citty": "citty@^0.1.6",
-        "js-yaml": "js-yaml@^4.1.0"
-      },
-      "npmPackage": "@every-env/compound-plugin",
-      "source": "npm:@every-env/compound-plugin@3.8.3",
-      "tarball": "https://registry.npmjs.org/@every-env/compound-plugin/-/compound-plugin-3.8.3.tgz",
-      "unpackHash": "sha256-YxCqhDFAKHWc7/XZh79GO302CQFwigGO++RhofYB7vY=",
-      "version": "3.8.3"
     },
     "curated-themes": {
       "autoUpdate": true,
