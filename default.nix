@@ -1,8 +1,15 @@
+let
+  npins = import ./npins;
+in
 {
   system ? builtins.currentSystem,
-  sources ? import ./npins,
+  sources ? npins,
   nixpkgs ? sources.nixpkgs,
+  # External dep — the pi tarball pin (the package itself is built from the
+  # registry entry; the pin stays as a seam).
+  pi ? sources.pi,
   pkgs ? import nixpkgs { inherit system; },
+  ...
 }:
 
 let
@@ -28,6 +35,8 @@ let
       piPackages
       registry
       ;
+    # own pins as the base, then the batch seam, then the named dep args.
+    sources = npins // sources // { inherit pi; };
   };
 in
 {

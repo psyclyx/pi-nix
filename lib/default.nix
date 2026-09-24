@@ -2,10 +2,10 @@
   pkgs,
   modules ? import ../modules,
   piPackages ? import ../packages {
-    inherit pkgs;
-    sources = import ../npins;
+    inherit pkgs sources;
   },
   registry ? import ../registry,
+  sources ? import ../npins,
 }:
 
 let
