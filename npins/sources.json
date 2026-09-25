@@ -16,9 +16,9 @@
       },
       "branch": "main",
       "submodules": false,
-      "revision": "a69bef789bc95abf0acee16f7b4660b70b650bb9",
-      "url": "https://github.com/earendil-works/pi/archive/a69bef789bc95abf0acee16f7b4660b70b650bb9.tar.gz",
-      "hash": "sha256-D0MOSxouSZFXs/uqQfOesx2CYJw9fVPV3RGa26xKP3A="
+      "revision": "507d7649e9573f7caa38c7d920e2278b64a74ed8",
+      "url": "https://github.com/earendil-works/pi/archive/507d7649e9573f7caa38c7d920e2278b64a74ed8.tar.gz",
+      "hash": "sha256-f+oucCLbcHWaZZnQquX6ZBmvc3VoRk1pFMnFpFQbdl4="
     }
   },
   "version": 8
